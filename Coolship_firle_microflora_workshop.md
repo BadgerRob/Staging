@@ -4,9 +4,9 @@
 
 ## Introduction
 
-Today we aim to investigate the community composition of a blended (gueuze) lambic beer brewed in the South Downs, UK. Traditional styles of beer and wine are commonly fermented using domesticated strains of yeasts (_Saccharomyces_ _cerevisiae_). While such strains show phenotypic diversity within and between different beers, wines, geographic regions and even breweries, most fermentations use a defined monoculture of _S. cervevisiae_ to give reproducible results. To maintain reproducibility, fermentation is undertaken in controlled anaerobic environments that limit exposure to contaminants from the environment which can lead to spoilage. 
+Today we aim to investigate the community composition of a blended (gueuze) Lambic beer brewed in the South Downs, UK. Traditional styles of beer and wine are commonly fermented using domesticated strains of yeasts (_Saccharomyces_ _cerevisiae_). While such strains show phenotypic diversity within and between different beers, wines, geographic regions and even breweries, most fermentations use a defined monoculture of _S. cervevisiae_ to give reproducible results. To maintain reproducibility, fermentation is undertaken in controlled anaerobic environments that limit exposure to contaminants from the environment which can lead to spoilage. 
 
-Lambic beers are unlike traditional ales from the UK as the fermentation process is reliant on the natural seeding of the prepared fermentable (termed wort) by yeasts and bacteria from the local environment. Following the heating and boiling of grain to produce a range of fermentable sugars, the hot wort needs to be cooled before it is suitable for fermentation. There are many ways to achieve this under sterile conditions, however, one traditional method is to use "Coolships" which consisted of large open metal vats with a high surface to volume ratio. While highly effective in rapidly cooling the wort to fermentable temperatures, the open nature of coolships provides an opportunity for the natural microflora of the local area to enter the wort before it is sealed in barrels to undergo fermentation. The beer we are examining today has been seeded and fermented with wild microflora originating from the Firle region of the south downs, UK. The beer itself is a limited edition run of 1500 bottles and is a blend on lambic beer brewed in 2016 and 2017. I would like to thank brewer Gary Brandon for getting hold of the beer.  
+Lambic beers are unlike traditional ales from the UK as the fermentation process is reliant on the natural seeding of the prepared fermentable (termed wort) by yeasts and bacteria from the local environment. Following the heating and boiling of grain to produce a range of fermentable sugars, the hot wort needs to be cooled before it is suitable for fermentation. There are many ways to achieve this under sterile conditions; however, one traditional method is to use "Coolships" which consisted of large open metal vats with a high surface to volume ratio. While highly effective in rapidly cooling the wort to fermentable temperatures, the open nature of coolships provides an opportunity for the natural microflora of the local area to enter the wort before it is sealed in barrels to undergo fermentation. The beer we are examining today has been seeded and fermented with wild microflora originating from the Firle region of the South Downs, UK. The beer itself is a limited edition run of 1500 bottles and is a blend on Lambic beer brewed in 2016 and 2017. I would like to thank brewer Gary Brandon for getting hold of the beer.  
 
 
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/AllagashCoolship_1200.jpg "Coolship")  
@@ -18,7 +18,7 @@ _The ingredients of the beer_
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/image4.jpeg "beer")
 _The beer_  
 
-DNA was extracted from 250 ml of beer following centrifugation to collect a pellet consisting of cells, celuar debris and  breakdown material (termed Trub). Some of this beer has been fermenting in barrels since 2016.     
+DNA was extracted from 250 ml of beer following centrifugation to collect a pellet consisting of cells, cellular debris and breakdown material (termed Trub). Some of this beer has been fermenting in barrels since 2016.     
 
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/Trubb.jpg "Cloudy beer")
 _A 50 ml falcon tube of cloudy beer_  
@@ -26,7 +26,7 @@ _A 50 ml falcon tube of cloudy beer_
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/Trubb2.jpg "Trub pellet")
 _Pellet of cells and trub from 250 ml of beer. Spun at 4000 rpm @ 4 degrees C._  
 
-Lysis was undertaken at 55 degrees C with SDS, beta mercaptoethanol and protinaseK. DNA extraction was then undertaken gently with phenol:chloroform:isoamyl alcohol, salted out with Sodium Acetate and 2.5 x 100% ethanol, then susspended in water and treated with RNAseA. DNA underwent library preperation with ONT kit LSK-109 and run on an r9.4.1 flowcell with 1562 active pores detected. DNA sequencing was undertaken using MinKNOW and preliminary basecalling was undertaken using guppy (fast mode). No barcoding/indexing was used in this sequencing run.
+Lysis was undertaken at 55 degrees C with SDS, beta mercaptoethanol and protinaseK. DNA extraction was then undertaken gently with phenol:chloroform:isoamyl alcohol, salted out with Sodium Acetate and 2.5 x 100% ethanol, then suspended in water and treated with RNAseA. DNA underwent library preparation with ONT kit LSK-109 and run on an r9.4.1 flowcell with 1562 active pores detected. DNA sequencing was undertaken using MinKNOW and preliminary basecalling was undertaken using guppy (fast mode). No barcoding/indexing was used in this sequencing run.
 
 
 ## Setup  
@@ -84,7 +84,7 @@ watch -n 10 'find . -name "*.fastq" -exec grep 'read=' -c {} \; | paste -sd+ | b
 
 |Flag                         | Description                                                            | 
 | ----------------------------|:----------------------------------------------------------------------:| 
-| `watch`                     |invoke 'watch' command : tells the computer to watch for something      | 
+| `watch`                     |invoke 'watch' command: tells the computer to watch for something      | 
 | `- n 10`                    |every 10 seconds                                                        | 
 | `find .`                    |look in every directory below where you are                             |
 | `-name "*.fastq"`           |target of find which will find every file with 'fastq' in its name      |
@@ -132,8 +132,8 @@ cat path/to/pass/*.fastq > workshop.reads.fastq
 
 ### Resample reads (optional extra)
 
-If required, you can resample reads using fastqSample command from the program canu.
-To resample 15,000 reads with the same length distrobution but no less than 1000bp:
+If required, you can resample reads using fastqSample command from the program Canu.
+To resample 15,000 reads with the same length distribution but no less than 1000bp:
 
 ```
 cp path/to/workshop.reads.fastq path/to/reads.fastq.u.fastq
@@ -145,7 +145,7 @@ Note: the file name must be `FILENAME.fastq.u.fastq` but the path must show `FIL
 
 |Flag                         | Description                                                            | 
 | ----------------------------|:----------------------------------------------------------------------:| 
-| `-U`                        |unpaired reads used for nanopore sequecing                              | 
+| `-U`                        |unpaired reads used for nanopore sequencing                              | 
 | `-p`                        |total number of random reads to resample                                | 
 | `-m`                        |minimum read length to include                                          |
 | `-I`                        |path/to/input/reads.fastq                                               |
@@ -159,7 +159,7 @@ Note: the file name must be `FILENAME.fastq.u.fastq` but the path must show `FIL
 
 ## Fixing broken fastq files with Seqkit sana (optional)
 
-Sometimes errors can occour when preparing a fastq file for analysis. This can cause problems in down stream processing. [Seqkit](https://github.com/shenwei356/seqkit) is designed to help identify errors and salvage broken fastq files.
+Sometimes errors can occur when preparing a `.fastq` file for analysis. This can cause problems in down stream processing. [Seqkit](https://github.com/shenwei356/seqkit) is designed to help identify errors and salvage broken `.fastq` files.
 
 If not installed, Seqkit can be installed in your conda environment by:
 
@@ -179,7 +179,7 @@ seqkit sana  workshop.reads.fastq -o rescued.workshop.reads.fastq
 
 ## Taxonomic identification using Kraken2.
 
-Kraken and Kraken2 provide a means to assign taxonomic identification to reads using a k-mer based indexing against a reference database. We provide a slimline reference database compiled for this workshop as well as the minikraken2 database. (ftp://ftp.ccb.jhu.edu/pub/data/kraken2_dbs/minikraken2_v2_8GB_201904_UPDATE.tgz) Other databases such as the Loman labs [microbial-fat-free](https://lomanlab.github.io/mockcommunity/mc_databases.html) and [maxikraken](https://lomanlab.github.io/mockcommunity/mc_databases.html) are also available. 
+Kraken and Kraken2 provide a means to assign taxonomic identification to reads using a k-mer based indexing against a reference database. We provide a small reference database compiled for this workshop as well as the minikraken2 database. (ftp://ftp.ccb.jhu.edu/pub/data/kraken2_dbs/minikraken2_v2_8GB_201904_UPDATE.tgz) Other databases such as the Loman labs [microbial-fat-free](https://lomanlab.github.io/mockcommunity/mc_databases.html) and [maxikraken](https://lomanlab.github.io/mockcommunity/mc_databases.html) are also available. 
 
 ### Optional extra information
 
@@ -215,11 +215,11 @@ Try the assembly again using the minikraken2 database and see how your database 
 
 ## Visualization of output
 
-While scrolling through the kraken2 outputs can be fun and somewhat alarming, it is not the most efficent or user friendly way of eyeballing your sample. Here we present two methods to display rough community composition of the sample in a user friendly and interactive way.
+While scrolling through the kraken2 outputs can be fun and somewhat alarming, it is not the most efficient or user friendly way of eyeballing your sample. Here we present two methods to display rough community composition of the sample in a user friendly and interactive way.
 
 ### Krona
 
-Krona produces an interactive `.html` file based on your `--report` file. While not fully integrated with kraken2, the use of the report file gives an overall approximation of your sample diversity based on individual reads. Try this on the  kraken outputs from the different databses and/or basecalling modes. 
+Krona produces an interactive `.html` file based on your `--report` file. While not fully integrated with kraken2, the use of the report file gives an overall approximation of your sample diversity based on individual reads. Try this on the kraken outputs from the different databases and/or basecalling modes. 
 
 ```
 
@@ -234,7 +234,7 @@ ktImportTaxonomy -q 2 -t 3 report.txt -o kraken_krona_report.html
 | `-o`                        |HTML output                                                             |
 
 
-Copy the html files to your local machine and open in your preferd browser (tested in firefox).
+Copy the html files to your local machine and open in your preferred browser (tested in firefox).
 
 ```
 
@@ -290,7 +290,7 @@ How does basecalling mode affect your results?
 
 ### Minimap2  
 
-[Minimap2](https://github.com/lh3/minimap2) is a program that has been developed to deal with mapping long and noisy raw nanopore reads. Two modes are used in the following assembly, `minimap2 -x ava-ont` and `minimap2 -ax map-ont`. The former performs an exaustive "All v ALL" pairwise alignments on the read sets to find and map overlaps between reads. The latter maps long noisy reads to a reference sequence. Minimap2 was developed to replace BWA for mapping long noisy reads from both nanopore and Pac-Bio sequencing runs. 
+[Minimap2](https://github.com/lh3/minimap2) is a program that has been developed to deal with mapping long and noisy raw nanopore reads. Two modes are used in the following assembly, `minimap2 -x ava-ont` and `minimap2 -ax map-ont`. The former performs an exhaustive "All v ALL" pairwise alignments on the read sets to find and map overlaps between reads. The latter maps long noisy read to a reference sequence. Minimap2 was developed to replace BWA for mapping long noisy reads from both nanopore and Pac-Bio sequencing runs. 
 
 
 ```
@@ -302,14 +302,14 @@ Note: The output of this file is in a compressed pairwise alignment format (.paf
 
 ### Miniasm  
 
-[Miniasm] (https://github.com/lh3/miniasm) is then used to perform an assembly using the identified overlaps in the `.paf` file. No error correction is undertaken thus the assembled contigs will have the aproximate error structure of raw reads.  
+[Miniasm] (https://github.com/lh3/miniasm) is then used to perform an assembly using the identified overlaps in the `.paf` file. No error correction is undertaken thus the assembled contigs will have the approximate error structure of raw reads.  
 
 ```
 miniasm -f workshop.reads.fastq qorkshop.paf.gz > workshop.contigs.gfa
 
 ```
 
-Miniasm produces a graphical fragment assembly (`.gfa`) file containing assembled contigs and contig overlaps. This file type can be viewed in the program `bandage` to give a visual representation of a metagenome. However, due to the error associated with this aproach, read polishing can be undertaken to increase sequence accuracy. Contigs can be extracted from a `.gfa` file and stored in a .fasta format using the following awk command.
+Miniasm produces a graphical fragment assembly (`.gfa`) file containing assembled contigs and contig overlaps. This file type can be viewed in the program `bandage` to give a visual representation of a metagenome. However, due to the error associated with this approach, read polishing can be undertaken to increase sequence accuracy. Contigs can be extracted from a `.gfa` file and stored in a `.fasta` format using the following awk command.
 
 ```
 
@@ -319,7 +319,7 @@ awk '/^S/{print ">"$2"\n"$3}' workshop.contigs.gfa | fold > workshop.contigs.fas
 
 ## Polishing with racon
 
-Polishing a sequence refers to the process of identifying and correcting errors in a sequence based on a consensus or raw reads. Some methods use raw signal data from the fast5 files to aid in the identification and correction. A number of polishing programs are in circulation which include the gold standard [Nanopolish](https://github.com/jts/nanopolish), the ONT release [Medaka](https://github.com/nanoporetech/medaka) and the ultra fast [Racon](https://github.com/isovic/racon). Each approach has advantages and disadvantages to their use. Nanopolish is computationally intensive but uses raw signal data contained in fast5 files to aid error correction. This also relies on the retention of the large `.fast5` files from a sequencing run. Medaka is reliable and relitivly fast and raccon is ultra fast but does not use raw squiggle data.  
+Polishing a sequence refers to the process of identifying and correcting errors in a sequence based on a consensus or raw reads. Some methods use raw signal data from the fast5 files to aid in the identification and correction. A number of polishing programs are in circulation which include the gold standard [Nanopolish](https://github.com/jts/nanopolish), the ONT release [Medaka](https://github.com/nanoporetech/medaka) and the ultra-fast [Racon](https://github.com/isovic/racon). Each approach has advantages and disadvantages to their use. Nanopolish is computationally intensive but uses raw signal data contained in fast5 files to aid error correction. This also relies on the retention of the large `.fast5` files from a sequencing run. Medaka is reliable and relatively fast and racon is ultra fast but does not use raw squiggle data.  
 
 The first step in polishing an assembly is to remap the raw reads back to the assembled contigs. This is done using `minimap2 -ax map-ont`.  
 
@@ -350,12 +350,12 @@ kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report workshop.contigs.
 
 What has happened to the number of taxa in the kraken2 report?  
 How do you explain this effect?  
-Try blast serching some contigs from your report agains the NCBI database.  
+Try blast searching some contigs from your report against the NCBI database.  
 
 
 ## Flye assembly
 
-The assemblers [Flye](https://github.com/fenderglass/Flye) and [Canu](https://github.com/marbl/canu) are available to perform assemblies which include error correction steps. Canu was primerally designed to assemble whole genomes from sequenced isolates and is more computationaly intensive that Flye. Flye has a --meta flag with designed perameters to assemble long read metagenomes. Here we will run Flye on our raw reads.
+The assemblers [Flye](https://github.com/fenderglass/Flye) and [Canu](https://github.com/marbl/canu) are available to perform assemblies which include error correction steps. Canu was primarily designed to assemble whole genomes from sequenced isolates and is more computationally intensive that Flye. Flye has a --meta flag with designed parameters to assemble long read metagenomes. Here we will run Flye on our raw reads.
 
 
 ```
@@ -380,4 +380,4 @@ How does it differ from the raw read Kraken2 report?
 
 ## Summary
 
-Long read sequencing provides a means to assemble metagenomes. Due to the length of reads, assemblies of larger compleate contigs are possable relative to short, high accuracy reads. This often permits a greater understanding of community composition, genetic diversity as well as a greater resolution of the genetic context of genes of interest.
+Long read sequencing provides a means to assemble metagenomes. Due to the length of reads, assemblies of larger complete contigs are possible relative to short, high accuracy reads. This often permits a greater understanding of community composition, genetic diversity as well as a greater resolution of the genetic context of genes of interest.
