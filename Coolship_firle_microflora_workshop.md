@@ -8,11 +8,12 @@ Today we aim to investigate the community composition of a blended (gueuze) lamb
 
 Lambic beer is unlike traditional ales from the UK as the fermentation process is reliant on the natural seeding of the prepared fermentable (termed wort) by yeasts and bacteria from the local environment. Following the heating and boiling of grain to produce a range of fermentable sugars, the hot wort needs to be cooled before it is suitable for fermentation. There are many ways to achieve this under sterile conditions in modern breweries, however, one traditional method is to use "Coolships" which consisted of large open metal vats with a high surface to volume ratio. While highly effective in rapidly cooling the wort to fermentable temperatures, the open nature of coolships provides an opportunity for the natural microflora of the local area to enter the wort before it is sealed in barrels for fermentation. The beer we are examining today has been seeded and fermented with wild microflora originating from the Firle region of the south downs, UK.  
 
+
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/AllagashCoolship_1200.jpg "Coolship")  
-_A coolship cooling beer_  
+_Cooling wort in a coolship_  
 
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/image3.jpeg "Firle Microflora")  
-_The ingredients_  
+_The ingredients of the beer_  
 
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/image2.jpeg "beer")
 _The beer_  
