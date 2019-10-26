@@ -32,30 +32,35 @@ Sample high accuracy fastq files:
 
 Nanopore sequencing results in fast5 files that contain raw signal data termed "squiggles". This signal needs to be processed into the `.fastq` format for onward analysis. This is undertaken through a process called 'basecalling'. The current program released for use by Oxford Nanopore is called `Guppy` and can be implemented in both GPU and CPU modes. Two forms of basecalling are available, 'fast' and 'high-accuracy' (HAC). HAC basecalling implements a 'flipflop' basecalling algorithm which is highly computationally intensive and thus slower than the fast basecalling method. Compare the two methods on the subset of fast5 files.  
 
+Guppy fast basecalling:
 ```
 guppy_basecaller -r --input_path path/to/fast5/ --save_path /path/to/fastq/ --qscore_filtering --min_qscore 7 --cpu_threads_per_caller 4 --num_callers 2
 
 ```
 
-
+Guppy high_accuracy basecalling:
 ```
 guppy_basecaller -r --input_path path/to/fast5/ --save_path /path/to/fastq/ --config dna_r9.4.1_450bps_hac.cfg  --qscore_filtering --min_qscore 7 --cpu_threads_per_caller 4 --num_callers 2
 
 ```
 
-`guppy_basecaller`      : calls guppy  
-`-r`                    : recursive  
-`--input-path`          : path to fast5 dir/  
-`--save-path`           : path to output fastq files  
-`--qscore filtering`    : enable quality score filtering (optional)  
-`--min_qscore`          : qscore filtering value (optional, default 7)  
-`cpu_threads_per_caller`: number of threads to run.  
-`--num_callers`         : number of basecallers to run.  
-`--config`              : configuration file to run (HAC).  
+|Flag                      | Description               | 
+| -------------------------|:-------------------------:| 
+| `guppy_basecaller`       |calls Guppy                | 
+| `-r`                     |recursive mode             | 
+| `--input-path`           |path to fast5 dir/         |
+| `--save-path`            |path to output fastq files |
+| `--qscore_filtering`     |filter for quality score   |
+| `--min_qscore`           |minimum qscore for pass    |
+| `cpu_threads_per_caller` |number of threads          |
+| `--num_callers`          |number of basecallers      |
+| `--config`               |configuration file         |
+
+
 
 Reads are output as `.fastq` files containing 4000 reads and quality data per file. Sequences contain a `@` followed by a header then sequence. This is separated from quality data by `+`. 
 
-(Optional) If you want to you can watch in real time how many sequences are being written you can change to the directory where your fastq files are being written (/pass):
+(_Optional_) If you want to you can watch in real time how many sequences are being written you can change to the directory where your fastq files are being written (/pass):
 
 ```
 
@@ -63,23 +68,27 @@ watch -n 10 'find . -name "*.fastq" -exec grep 'read' -c {} \; | paste -sd+ | bc
 
 ```
 
-`watch`                    : invoke 'watch' command : tells the computer to watch for something  
-`- n 10`                   : every 10 seconds  
-`find .`                   : look in every directory below where you are   
-`-name "*.fastq"`          : target of find which will find every file with 'fastq' in its name  
-`-exec`                    : execute the following command on find .  
-`grep`                     : command to look for stuff within each file found by 'find . -name'  
-`'read'`                   : the thing grep is looking for in the header of each sequence (1 per sequence)  
-`-c` = count               : count the number of the occurrence 'read' in all files  
-`{} \; | paste -sd+ | bc'` : paste the output from grep to basic calculator to display a count on the screen 
+|Flag                         | Description                                                            | 
+| ----------------------------|:----------------------------------------------------------------------:| 
+| `watch`                     |invoke 'watch' command : tells the computer to watch for something      | 
+| `- n 10`                    |every 10 seconds                                                        | 
+| `find .`                    |look in every directory below where you are                             |
+| `-name "*.fastq"`           |target of find which will find every file with 'fastq' in its name      |
+| `-exec`                     |execute the following command on find .                                 |
+| `grep`                      |command to look for stuff within each file found by 'find . -name'      |
+| `'read='`                   |the thing grep is looking for (1 per sequence header)                   |
+| `-c`                        |count the number of 'read=' from grep                                   |
+| `{} \; \| paste -sd+ \| bc'`|paste the output from grep to basic calculator and display on screen    |  
 
 
 ### Observations
 
-How long did the different runs take?  
-How do the identities differ with simple blast searching NCBI?  
+How long did the different basecalling methods take to run?  
+How do the identities differ at the individual read level when using a simple blast search of NCBI databases?  
 
 ## Read QC  
+
+Before starting any analysis it is often advised to check the number of reads and quality of your run. You can start by using a simple bash one liner to count all reads in `pass/`. This can be done as reads are being basecalled.
 
 Count the number of fastq reads in the Guppy pass dir.
 
@@ -88,14 +97,14 @@ Count the number of fastq reads in the Guppy pass dir.
 cat pass/*.fastq | grep 'read=' - -c
 
 ```
-
-Create a single `.fastq` file for onward analysis.
+Once basecalling has completed you can create a single `.fastq` file for onward analysis. Piping outputs from `cat pass/*.fastq` can also be used if storage is limited.
 
 ```
 
 cat path/to/pass/*.fastq > workshop.reads.fastq
 
 ```
+
 ### Resample reads (optional extra)
 
 If required, you can resample reads using fastqSample command from the program canu.
