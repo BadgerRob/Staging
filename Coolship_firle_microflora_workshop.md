@@ -302,7 +302,7 @@ Note: The output of this file is in a compressed pairwise alignment format (.paf
 
 ### Miniasm  
 
-[Miniasm] (https://github.com/lh3/miniasm) is then used to perform an assembly using the identified overlaps in the `.paf` file. No error correction is undertaken thus the assembled contigs will have the approximate error structure of raw reads.  
+[Miniasm](https://github.com/lh3/miniasm) is then used to perform an assembly using the identified overlaps in the `.paf` file. No error correction is undertaken thus the assembled contigs will have the approximate error structure of raw reads.  
 
 ```
 miniasm -f workshop.reads.fastq qorkshop.paf.gz > workshop.contigs.gfa
