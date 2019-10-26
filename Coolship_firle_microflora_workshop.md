@@ -1,12 +1,12 @@
 # EBAME 2019: Longread / Nanopore sequencing Workshop
-# Metagenomics of a gueuze type lambic beer from Sussex.
+# Metagenomics of a gueuze type lambic beer from the county of Sussex, United Kingdom.
 
 
 ## Introduction
 
 Today we aim to investigate the community composition of a blended (gueuze) lambic beer brewed in the South Downs, UK. Traditional styles of beer and wine are commonly fermented using domesticated strains of yeasts (_Saccharomyces_ _cerevisiae_). While such strains show phenotypic diversity within and between different beers, wines, geographic regions and even breweries, most fermentations use a defined monoculture of _S. cervevisiae_ to give reproducible results. To maintain reproducibility, fermentation is undertaken in controlled anaerobic environments that limit exposure to contaminants from the environment which can lead to spoilage. 
 
-Lambic beer is unlike traditional ales from the UK as the fermentation process is reliant on the natural seeding of the prepared fermentable (termed wort) by yeasts and bacteria from the local environment. Following the heating and boiling of grain to produce a range of fermentable sugars, the hot wort needs to be cooled before it is suitable for fermentation. There are many ways to achieve this under sterile conditions in modern breweries, however, one traditional method is to use "Coolships" which consisted of large open metal vats with a high surface to volume ratio. While highly effective in rapidly cooling the wort to fermentable temperatures, the open nature of coolships provides an opportunity for the natural microflora of the local area to enter the wort before it is sealed in barrels for fermentation. The beer we are examining today has been seeded and fermented with wild microflora originating from the Firle region of the south downs, UK.  
+Lambic beers are unlike traditional ales from the UK as the fermentation process is reliant on the natural seeding of the prepared fermentable (termed wort) by yeasts and bacteria from the local environment. Following the heating and boiling of grain to produce a range of fermentable sugars, the hot wort needs to be cooled before it is suitable for fermentation. There are many ways to achieve this under sterile conditions, however, one traditional method is to use "Coolships" which consisted of large open metal vats with a high surface to volume ratio. While highly effective in rapidly cooling the wort to fermentable temperatures, the open nature of coolships provides an opportunity for the natural microflora of the local area to enter the wort before it is sealed in barrels to undergo fermentation. The beer we are examining today has been seeded and fermented with wild microflora originating from the Firle region of the south downs, UK. The beer itself is a limited edition run of 1500 bottles and is a blend on lambic beer brewed in 2016 and 2017. I would like to thank brewer Gary Brandon for getting hold of the beer for me. It was not easy, it was not free.  
 
 
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/AllagashCoolship_1200.jpg "Coolship")  
@@ -64,7 +64,7 @@ Reads are output as `.fastq` files containing 4000 reads and quality data per fi
 
 ```
 
-watch -n 10 'find . -name "*.fastq" -exec grep 'read' -c {} \; | paste -sd+ | bc'
+watch -n 10 'find . -name "*.fastq" -exec grep 'read=' -c {} \; | paste -sd+ | bc'
 
 ```
 
@@ -79,7 +79,6 @@ watch -n 10 'find . -name "*.fastq" -exec grep 'read' -c {} \; | paste -sd+ | bc
 | `'read='`                   |the thing grep is looking for (1 per sequence header)                   |
 | `-c`                        |count the number of 'read=' from grep                                   |
 | `{} \; \| paste -sd+ \| bc'`|paste the output from grep to basic calculator and display on screen    |  
-
 
 ### Observations
 
@@ -111,11 +110,12 @@ If required, you can resample reads using fastqSample command from the program c
 To resample 15,000 reads with the same length distrobution but no less than 1000bp:
 
 ```
-mv reads.fastq reads.fastq.u.fastq
+cp path/to/workshop.reads.fastq path/to/reads.fastq.u.fastq
 
-fastqSample -U -p 150000 -m 1000 -I /path/to/plasmid_cat_chop.fastq -O /path/to/Plasmid_cat_chop_15k.fastq
+fastqSample -U -p 150000 -m 1000 -I /path/to/reads.fastq -O /path/to/reads.downsample.fastq.
 
 ```
+Note: the file name must be `FILENAME.fastq.u.fastq` but the path must show `FILENAME.fastq`.  
 
 |Flag                         | Description                                                            | 
 | ----------------------------|:----------------------------------------------------------------------:| 
@@ -131,18 +131,35 @@ fastqSample -U -p 150000 -m 1000 -I /path/to/plasmid_cat_chop.fastq -O /path/to/
 ### Nanoplot
 
 
-## Fixing broken reads with 
+## Fixing broken fastq files with Seqkit sana (optional)
+
+Sometimes errors can occour when preparing a fastq file for analysis. This can cause problems in down stream processing. [Seqkit](https://github.com/shenwei356/seqkit) is designed to help identify errors and salvage broken fastq files.
+
+If not installed, Seqkit can be installed in your conda environment by:
+
+```
+
+conda install -c bioconda seqkit
+
+```
+
+Run [Seqkit sana](https://bioinf.shenwei.me/seqkit/usage/#sana) to sanitize a `.fastq` file.  
+
+```
+
+seqkit sana  workshop.reads.fastq -o rescued.workshop.reads.fastq
+
+```
+
 
 
 ## Taxonomic identification using Kraken2.
 
-Kraken and Kraken2 provides a means to assign taxonomic identification to reads using a k-mer based indexing against a reference database. We provide a slimline reference database compiled for this workshop as well as the minikraken2 database. (ftp://ftp.ccb.jhu.edu/pub/data/kraken2_dbs/minikraken2_v2_8GB_201904_UPDATE.tgz) Other databases such as the Loman labs [microbial-fat-free](https://lomanlab.github.io/mockcommunity/mc_databases.html) and [maxikraken](https://lomanlab.github.io/mockcommunity/mc_databases.html) are also available. 
+Kraken and Kraken2 provide a means to assign taxonomic identification to reads using a k-mer based indexing against a reference database. We provide a slimline reference database compiled for this workshop as well as the minikraken2 database. (ftp://ftp.ccb.jhu.edu/pub/data/kraken2_dbs/minikraken2_v2_8GB_201904_UPDATE.tgz) Other databases such as the Loman labs [microbial-fat-free](https://lomanlab.github.io/mockcommunity/mc_databases.html) and [maxikraken](https://lomanlab.github.io/mockcommunity/mc_databases.html) are also available. 
 
 ### Optional extra information
 
-Custom reference databases can be created using `kraken2-build --download-library`, `--download-taxonomy` and `--build` [commands](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual#custom-databases). Mick Wattson has written [Perl scripts](https://github.com/mw55309/Kraken_db_install_scripts) to aid in customisation. Example of customisation of databases can be found [here](http://porecamp.github.io/2017/metagenomics.html).
-
-
+Custom reference databases can be created using `kraken2-build --download-library`, `--download-taxonomy` and `--build` [commands](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual#custom-databases). Mick Wattson has written [Perl scripts](https://github.com/mw55309/Kraken_db_install_scripts) to aid in customisation. Example of creation of custom databases by the Loman lab can be found [here](http://porecamp.github.io/2017/metagenomics.html).
 
 
 ```
@@ -158,7 +175,12 @@ kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report path/to/output/re
 
 ### Observations
 
-Have a look at both the output and `report.txt` files using head and more to get a first look at the sample. Use `head` and `more` bash commands. Does this look correct for a lambic beer? Anything odd in the sample?
+Have a look at both the output and `report.txt` files using head and more to get a first look at the sample. Use `head` and `more` bash commands.  
+Does this look correct for a lambic beer?  
+Anything odd in the sample?  
+How much odd stuff is in the sample?
+Why do you think this has had positives hits in the kraken2 databases?
+What industry do you think the [brewers](https://www.burningskybeer.com/beers/coolship-release-no-2/) sourced the coolships from?   
 
 Try the assembly again using the minikraken2 database and see how your database can affect your results.
 
