@@ -208,10 +208,12 @@ How does basecalling mode affect your results?
 minimap2 -x ava-ont -t 8 workshop.reads.fastq workshop.reads.fastq | gzip -1 > workshop.paf.gz
 
 ```
-miniasm -f workshop.reads.fastq qorkshop.paf.gz > workshop.contigs.gfa
 
 ```
+miniasm -f workshop.reads.fastq qorkshop.paf.gz > workshop.contigs.gfa
+```
 
+gfa to .fasta
 ```
 
 awk '/^S/{print ">"$2"\n"$3}' workshop.contigs.gfa | fold > workshop.contigs.fasta
@@ -231,7 +233,7 @@ Polish with racon
 racon -t 12 workshop.reads.fastq workshop.reads_to_assembly.paf.gz workshop.contigs.fasta > workshop.contigs.racon.fasta
 
 ```
-
+kraken2 on assembly
 ```
 kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report workshop.contigs.racon.txt workshop.contigs.racon.fasta > workshop.contigs.kraken
 
