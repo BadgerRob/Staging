@@ -6,7 +6,7 @@
 
 Today we aim to investigate the community composition of a blended (gueuze) lambic beer brewed in the South Downs, UK. Traditional styles of beer and wine are commonly fermented using domesticated strains of yeasts (_Saccharomyces_ _cerevisiae_). While such strains show phenotypic diversity within and between different beers, wines, geographic regions and even breweries, most fermentations use a defined monoculture of _S. cervevisiae_ to give reproducible results. To maintain reproducibility, fermentation is undertaken in controlled anaerobic environments that limit exposure to contaminants from the environment which can lead to spoilage. 
 
-Lambic beers are unlike traditional ales from the UK as the fermentation process is reliant on the natural seeding of the prepared fermentable (termed wort) by yeasts and bacteria from the local environment. Following the heating and boiling of grain to produce a range of fermentable sugars, the hot wort needs to be cooled before it is suitable for fermentation. There are many ways to achieve this under sterile conditions, however, one traditional method is to use "Coolships" which consisted of large open metal vats with a high surface to volume ratio. While highly effective in rapidly cooling the wort to fermentable temperatures, the open nature of coolships provides an opportunity for the natural microflora of the local area to enter the wort before it is sealed in barrels to undergo fermentation. The beer we are examining today has been seeded and fermented with wild microflora originating from the Firle region of the south downs, UK. The beer itself is a limited edition run of 1500 bottles and is a blend on lambic beer brewed in 2016 and 2017. I would like to thank brewer Gary Brandon for getting hold of the beer for me. It was not easy, it was not free.  
+Lambic beers are unlike traditional ales from the UK as the fermentation process is reliant on the natural seeding of the prepared fermentable (termed wort) by yeasts and bacteria from the local environment. Following the heating and boiling of grain to produce a range of fermentable sugars, the hot wort needs to be cooled before it is suitable for fermentation. There are many ways to achieve this under sterile conditions, however, one traditional method is to use "Coolships" which consisted of large open metal vats with a high surface to volume ratio. While highly effective in rapidly cooling the wort to fermentable temperatures, the open nature of coolships provides an opportunity for the natural microflora of the local area to enter the wort before it is sealed in barrels to undergo fermentation. The beer we are examining today has been seeded and fermented with wild microflora originating from the Firle region of the south downs, UK. The beer itself is a limited edition run of 1500 bottles and is a blend on lambic beer brewed in 2016 and 2017. I would like to thank brewer Gary Brandon for getting hold of the beer.  
 
 
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/AllagashCoolship_1200.jpg "Coolship")  
@@ -17,6 +17,17 @@ _The ingredients of the beer_
 
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/image4.jpeg "beer")
 _The beer_  
+
+DNA was extracted from 250 ml of beer following centrifugation to collect a pellet consisting of cells, celuar debris and  breakdown material (termed Trub). Some of this beer has been fermenting in barrels since 2016.     
+
+![alt text](https://github.com/BadgerRob/Staging/blob/master/Trubb.jpg "Cloudy beer")
+_A 50 ml falcon tube of cloudy beer_  
+
+![alt text](https://github.com/BadgerRob/Staging/blob/master/Trubb2.jpg "Trub pellet")
+_Pellet of cells and trub from 250 ml of beer. Spun at 4000 rpm @ 4 degrees C._  
+
+Lysis was undertaken at 55 degrees C with SDS, beta mercaptoethanol and protinaseK. DNA extraction was then undertaken gently with phenol:chloroform:isoamyl alcohol, salted out with Sodium Acetate and 2.5 x 100% ethanol, then susspended in water and treated with RNAseA. DNA underwent library preperation with ONT kit LSK-109 and run on an r9.4.1 flowcell with 1562 active pores detected. DNA sequencing was undertaken using MinKNOW and preliminary basecalling was undertaken using guppy (fast mode). No barcoding/indexing was used in this sequencing run.
+
 
 ## Setup  
 
