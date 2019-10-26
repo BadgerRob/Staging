@@ -15,7 +15,7 @@ _Cooling wort in a coolship_
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/image3.jpeg "Firle Microflora")  
 _The ingredients of the beer_  
 
-![alt text](https://github.com/BadgerRob/Staging/blob/master/image2.jpeg "beer")
+![alt text](https://github.com/BadgerRob/Staging/blob/master/image4.jpeg "beer")
 _The beer_  
 
 ## Setup  
@@ -221,7 +221,7 @@ awk '/^S/{print ">"$2"\n"$3}' workshop.contigs.gfa | fold > workshop.contigs.fas
 
 ```
 
-##Polishing with racon
+## Polishing with racon
 
 ```
 minimap2 -t 8 -x map-ont workshop.contigs.fasta workshop.reads.fastq | gzip -1 > workshop.reads_to_assembly.paf.gz
