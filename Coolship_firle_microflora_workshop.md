@@ -76,8 +76,8 @@ watch -n 10 'find . -name "*.fastq" -exec grep 'read' -c {} \; | paste -sd+ | bc
 
 ### Observations
 
-How long did the different runs take?
-How do the identities differ with simple blast searching NCBI?
+How long did the different runs take?  
+How do the identities differ with simple blast searching NCBI?  
 
 ## Read QC
 Count the number of fastq reads in the Guppy pass dir.
@@ -121,10 +121,10 @@ kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report path/to/output/re
 
 ```
 
-`kraken2`   :Call kraken2
-`--db`      :database name flag
-`--threads` :number of threads to use
-`--report`  : generate a user friendly report of taxonomy
+`kraken2`   :Call kraken2  
+`--db`      :database name flag  
+`--threads` :number of threads to use  
+`--report`  : generate a user friendly report of taxonomy  
 
 ### Observations
 
@@ -146,10 +146,10 @@ ktImportTaxonomy -q 2 -t 3 report.txt -o kraken_krona_report.html
 
 ```
 
-`ktImportTaxonomy`  : call KronaTools Import taxonomy.
-`q 1 -t 3`          : For compatibility with kraken2 output
-`report.txt.`       : Kraken2 report.txt file
-`-o`                : HTML output.
+`ktImportTaxonomy`  : call KronaTools Import taxonomy  
+`q 1 -t 3`          : For compatibility with kraken2 output  
+`report.txt.`       : Kraken2 report.txt file  
+`-o`                : HTML output  
 
 Copy the html files to your local machine and open in a browser.
 
@@ -199,9 +199,9 @@ Once you have loaded your file, navigate to the "sample" tab and try interacting
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/kraken.png)
 
 ### Observations
-How to the different databases affect your results?
-How does read depth affect your results?
-How does basecalling mode affect your results?
+How to the different databases affect your results?  
+How does read depth affect your results?  
+How does basecalling mode affect your results?  
 
 ##Assembly
 
