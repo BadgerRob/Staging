@@ -161,6 +161,7 @@ Kraken and Kraken2 provide a means to assign taxonomic identification to reads u
 
 Custom reference databases can be created using `kraken2-build --download-library`, `--download-taxonomy` and `--build` [commands](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual#custom-databases). Mick Wattson has written [Perl scripts](https://github.com/mw55309/Kraken_db_install_scripts) to aid in customisation. Example of creation of custom databases by the Loman lab can be found [here](http://porecamp.github.io/2017/metagenomics.html).
 
+Run `kraken2` on the sanitized `workshop.reads.fastq` file provided in this tutorial using the `kraken2_workshop_db`. 
 
 ```
 
@@ -168,42 +169,48 @@ kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report path/to/output/re
 
 ```
 
-`kraken2`   :Call kraken2  
-`--db`      :database name flag  
-`--threads` :number of threads to use  
-`--report`  : generate a user friendly report of taxonomy  
+|Flag                         | Description                                                            | 
+| ----------------------------|:----------------------------------------------------------------------:| 
+| `kraken2`                   |call kraken2                                                            | 
+| `--db`                      |database name flag                                                      | 
+| `--threads`                 |number of threads to use                                                |
+| `--report`                  |generate a user friendly report.txt of taxonomy                         |
+
 
 ### Observations
 
 Have a look at both the output and `report.txt` files using head and more to get a first look at the sample. Use `head` and `more` bash commands.  
+
 Does this look correct for a lambic beer?  
 Anything odd in the sample?  
-How much odd stuff is in the sample?
-Why do you think this has had positives hits in the kraken2 databases?
+How much odd stuff is in the sample?  
+Why do you think this has had positives hits in the kraken2 databases?  
 What industry do you think the [brewers](https://www.burningskybeer.com/beers/coolship-release-no-2/) sourced the coolships from?   
 
 Try the assembly again using the minikraken2 database and see how your database can affect your results.
 
-##Visualization of output
+## Visualization of output
 
-While scrolling through the kraken2 outputs can be fun and somewhat alarming, it does not produce a user friendly interpretation of the results. Here we present two methods to 'eye ball' your raw read diversity.
+While scrolling through the kraken2 outputs can be fun and somewhat alarming, it is not the most efficent or user friendly way of eyeballing your sample. Here we present two methods to display rough community composition of the sample in a user friendly and interactive way.
 
 ### Krona
 
-Krona produces an interactive `.html` file based on your `--report` file. While not fully integrated with kraken2, the use of the report file gives an overall approximation of your sample diversity based on individual reads. Try this on the two kraken outputs.
+Krona produces an interactive `.html` file based on your `--report` file. While not fully integrated with kraken2, the use of the report file gives an overall approximation of your sample diversity based on individual reads. Try this on the  kraken outputs from the different databses and/or basecalling modes. 
 
 ```
 
 ktImportTaxonomy -q 2 -t 3 report.txt -o kraken_krona_report.html
 
 ```
+|Flag                         | Description                                                            | 
+| ----------------------------|:----------------------------------------------------------------------:| 
+| `ktImportTaxonomy`          |call  KronaTools Import taxonomy                                        | 
+| `q 1 -t 3`                  |for compatibility with kraken2 output                                   | 
+| `report.txt.`               |Kraken2 report.txt file                                                 |
+| `-o`                        |HTML output                                                             |
 
-`ktImportTaxonomy`  : call KronaTools Import taxonomy  
-`q 1 -t 3`          : For compatibility with kraken2 output  
-`report.txt.`       : Kraken2 report.txt file  
-`-o`                : HTML output  
 
-Copy the html files to your local machine and open in a browser.
+Copy the html files to your local machine and open in your preferd browser (tested in firefox).
 
 ```
 
@@ -217,7 +224,7 @@ It should look something like this:
 
 ### Pavian
 
-Pavian is an R based program that is useful to produce Sankey plots. It can be run on your local machine if you have R [installed](https://a-little-book-of-r-for-bioinformatics.readthedocs.io/en/latest/src/installr.html). You may need to install `r-base-dev`. To set up Pavian open an R terminal and enter the following.
+Pavian is an R based program that is useful to produce Sankey plots and much more. It can be run on your local machine if you have R [installed](https://a-little-book-of-r-for-bioinformatics.readthedocs.io/en/latest/src/installr.html). You may need to install `r-base-dev`. To set up Pavian in R on your local machine, open an R terminal and enter the following.
 
 ```
 if (!require(remotes)) { install.packages("remotes") }
