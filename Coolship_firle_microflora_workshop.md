@@ -24,9 +24,9 @@ Organise into groups of 3 - 4.
 
 ## Data  
 
-Sample fast5 files:
-Sample quick fastq files:
-Sample high accuracy fastq files:
+Sample fast5 files:  
+Sample quick fastq files:  
+Sample high accuracy fastq files:  
 
 ## Basecalling
 
@@ -111,18 +111,22 @@ If required, you can resample reads using fastqSample command from the program c
 To resample 15,000 reads with the same length distrobution but no less than 1000bp:
 
 ```
+mv reads.fastq reads.fastq.u.fastq
 
 fastqSample -U -p 150000 -m 1000 -I /path/to/plasmid_cat_chop.fastq -O /path/to/Plasmid_cat_chop_15k.fastq
 
 ```
 
-`-U` = unpaired reads  
-`-p` = total number of random reads (add `-max` to get longest reads)  
-`-m` = minimum read lenght  
-`-I` [INPUT FILE]  
-`-O` [OUTPUT FILE]  
+|Flag                         | Description                                                            | 
+| ----------------------------|:----------------------------------------------------------------------:| 
+| `-U`                        |unpaired reads used for nanopore sequecing                              | 
+| `-p`                        |total number of random reads to resample                                | 
+| `-m`                        |minimum read length to include                                          |
+| `-I`                        |path/to/input/reads.fastq                                               |
+| `-O`                        |output sampled reads                                                    |
+| `-max`                      |optional flag to sample longest reads                                   |
 
-Note that --max can be used to sample from the longest to shortest reads.  
+
 
 ### Nanoplot
 
