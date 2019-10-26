@@ -27,6 +27,9 @@ Organise into groups of 3 - 4.
 Sample fast5 files:  
 Sample quick fastq files:  
 Sample high accuracy fastq files:  
+minicraken database:  
+workshop database:  
+
 
 ## Basecalling
 
@@ -101,7 +104,7 @@ cat pass/*.fastq | grep 'read=' - -c
 | ----------------------------|:----------------------------------------------------------------------:| 
 | `cat`                       |display content                                                         | 
 | `pass/*.fastq`              |of all files in pass ending in .fastq                                   | 
-| `|`                         |pipe to grep                                                            |
+| `\|`                         |pipe to grep                                                            |
 | `grep`                      |call grep search                                                        |
 | `"read="`                   |lines with "read=" in"                                                  |
 | `-`                         |output from cat                                                         |
@@ -334,14 +337,15 @@ kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report workshop.contigs.
 
 ### Observations
 
-What has happened to the number of taxa in the kraken2 report?
-How do you explain this effect?
-Try blast serching some contigs from your report agains the NCBI database.
+What has happened to the number of taxa in the kraken2 report?  
+How do you explain this effect?  
+Try blast serching some contigs from your report agains the NCBI database.  
 
 
-### Flye assembly
+## Flye assembly
 
 The assemblers [Flye](https://github.com/fenderglass/Flye) and [Canu](https://github.com/marbl/canu) are available to perform assemblies which include error correction steps. Canu was primerally designed to assemble whole genomes from sequenced isolates and is more computationaly intensive that Flye. Flye has a --meta flag with designed perameters to assemble long read metagenomes. Here we will run Flye on our raw reads.
+
 
 ```
 
@@ -358,4 +362,11 @@ flye --nano-raw path/to/workshop.reads.fastq -g 1g -o flye_workshop/ -t 8 --meta
 | `-t`                        |number of threads                                                       |
 | `--meta`                    |metagenome assembly rules                                               |
 
+### Observations
 
+How does the fly assembly differ from the minimap2/miniasm assembly?  
+How does it differ from the raw read Kraken2 report?  
+
+## Summary
+
+Long read sequencing provides a means to assemble accurate metagenomic scafolds. Due to the length of reads, assemblies of larger compleate contigs are possable and give a greater understanding of both diversity and genetic context of specific genes.
