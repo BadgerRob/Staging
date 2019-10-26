@@ -63,7 +63,7 @@ guppy_basecaller -r --input_path path/to/fast5/ --save_path /path/to/fastq/ --co
 
 Reads are output as `.fastq` files containing 4000 reads and quality data per file. Sequences contain a `@` followed by a header then sequence. This is separated from quality data by `+`. 
 
-(_Optional_) If you want to you can watch in real time how many sequences are being written you can change to the directory where your fastq files are being written (/pass):
+(_Optional_) If you to watch in real time how many sequences are being written you can change to the directory where your fastq files are being written (/pass) and enter the bash one-liner:
 
 ```
 
@@ -104,10 +104,10 @@ cat pass/*.fastq | grep 'read=' - -c
 | ----------------------------|:----------------------------------------------------------------------:| 
 | `cat`                       |display content                                                         | 
 | `pass/*.fastq`              |of all files in pass ending in .fastq                                   | 
-| `\|`                         |pipe to grep                                                            |
+| `\|`                        |run grep                                                                |
 | `grep`                      |call grep search                                                        |
-| `"read="`                   |lines with "read=" in"                                                  |
-| `-`                         |output from cat                                                         |
+| `"read="`                   |look for lines with "read=" in                                          |
+| `-`                         |target the output from `cat`                                            |
 | `-c`                        |count                                                                   |
 
 
@@ -369,4 +369,4 @@ How does it differ from the raw read Kraken2 report?
 
 ## Summary
 
-Long read sequencing provides a means to assemble accurate metagenomic scafolds. Due to the length of reads, assemblies of larger compleate contigs are possable and give a greater understanding of both diversity and genetic context of specific genes.
+Long read sequencing provides a means to assemble metagenomes. Due to the length of reads, assemblies of larger compleate contigs are possable relative to short, high accuracy reads. This often permits a greater understanding of community composition, genetic diversity as well as a greater resolution of the genetic context of genes of interest.
