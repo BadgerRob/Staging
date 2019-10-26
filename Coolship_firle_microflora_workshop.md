@@ -239,3 +239,15 @@ kraken2 on assembly
 kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report workshop.contigs.racon.txt workshop.contigs.racon.fasta > workshop.contigs.kraken
 
 ```
+
+
+Flye assembly
+
+```
+
+flye --nano-raw path/to/workshop.reads.fastq -g 1g -o flye_workshop/ -t 8 --meta
+
+```
+
+
+
