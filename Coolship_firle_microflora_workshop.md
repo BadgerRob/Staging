@@ -307,10 +307,11 @@ awk '/^S/{print ">"$2"\n"$3}' workshop.contigs.gfa | fold > workshop.contigs.fas
 
 Polishing a sequence refers to the process of identifying and correcting errors in a sequence based on a consensus or raw reads. Some methods use raw signal data from the fast5 files to aid in the identification and correction. A number of polishing programs are in circulation which include the gold standard [Nanopolish](https://github.com/jts/nanopolish), the ONT release [Medaka](https://github.com/nanoporetech/medaka) and the ultra fast [Racon](https://github.com/isovic/racon). Each approach has advantages and disadvantages to their use. Nanopolish is computationally intensive but uses raw signal data contained in fast5 files to aid error correction. This also relies on the retention of the large `.fast5` files from a sequencing run. Medaka is reliable and relitivly fast and raccon is ultra fast but does not use raw squiggle data.  
 
-The first step in polishing an assembly is to remap the raw reads back to the assembled contigs. This is done using `minimap2 -ax map-ont`.
+The first step in polishing an assembly is to remap the raw reads back to the assembled contigs. This is done using `minimap2 -ax map-ont`.  
 
 ```
 minimap2 -t 8 -ax map-ont workshop.contigs.fasta workshop.reads.fastq | gzip -1 > workshop.reads_to_assembly.paf.gz
+
 ```
 
 Racon is then used to polish the assembled contigs using the mapped raw reads.  
@@ -321,8 +322,9 @@ racon -t 12 workshop.reads.fastq workshop.reads_to_assembly.paf.gz workshop.cont
 
 ```
 
+## Kraken2 contig identification
 
-kraken2 can be run on the assembled contigs in the same way as before, using multiple databases.
+kraken2 can be run on the assembled contigs in the same way as before, also using multiple databases for comparison.
 
 ```
 
@@ -330,13 +332,16 @@ kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report workshop.contigs.
 
 ```
 
-###Observations
+### Observations
+
+What has happened to the number of taxa in the kraken2 report?
+How do you explain this effect?
+Try blast serching some contigs from your report agains the NCBI database.
 
 
+### Flye assembly
 
-
-
-Flye assembly
+The assemblers [Flye](https://github.com/fenderglass/Flye) and [Canu](https://github.com/marbl/canu) are available to perform assemblies which include error correction steps. Canu was primerally designed to assemble whole genomes from sequenced isolates and is more computationaly intensive that Flye. Flye has a --meta flag with designed perameters to assemble long read metagenomes. Here we will run Flye on our raw reads.
 
 ```
 
@@ -344,5 +349,13 @@ flye --nano-raw path/to/workshop.reads.fastq -g 1g -o flye_workshop/ -t 8 --meta
 
 ```
 
+|Flag                         | Description                                                            | 
+| ----------------------------|:----------------------------------------------------------------------:| 
+| `flye`                      |call  Flye                                                              | 
+| `--nano-raw`                |using nanopore uncorrected raw reads as input                           | 
+| `-g`                        |estimated genome size for primary coverage estimate                     |
+| `-o`                        |output dir                                                              |
+| `-t`                        |number of threads                                                       |
+| `--meta`                    |metagenome assembly rules                                               |
 
 
