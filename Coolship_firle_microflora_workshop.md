@@ -183,7 +183,7 @@ Kraken and Kraken2 provide a means to assign taxonomic identification to reads u
 
 ### Optional extra information
 
-Custom reference databases can be created using `kraken2-build --download-library`, `--download-taxonomy` and `--build` [commands](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual#custom-databases). Mick Wattson has written [Perl scripts](https://github.com/mw55309/Kraken_db_install_scripts) to aid in customisation. Example of creation of custom databases by the Loman lab can be found [here](http://porecamp.github.io/2017/metagenomics.html).
+Custom reference databases can be created using `kraken2-build --download-library`, `--download-taxonomy` and `--build` [commands](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual#custom-databases). Mick Wattson has written [Perl scripts](https://github.com/mw55309/Kraken_db_install_scripts) to aid in customisation. An example of the creation of custom databases by the Loman lab can be found [here](http://porecamp.github.io/2017/metagenomics.html).
 
 Run `kraken2` on the sanitized `workshop.reads.fastq` file provided in this tutorial using the `kraken2_workshop_db`. 
 
