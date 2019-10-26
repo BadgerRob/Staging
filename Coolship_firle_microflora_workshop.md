@@ -96,7 +96,19 @@ Count the number of fastq reads in the Guppy pass dir.
 cat pass/*.fastq | grep 'read=' - -c
 
 ```
-Once basecalling has completed you can create a single `.fastq` file for onward analysis. Piping outputs from `cat pass/*.fastq` can also be used if storage is limited.
+
+|Flag                         | Description                                                            | 
+| ----------------------------|:----------------------------------------------------------------------:| 
+| `cat`                       |display content                                                         | 
+| `pass/*.fastq`              |of all files in pass ending in .fastq                                   | 
+| `|`                         |pipe to grep                                                            |
+| `grep`                      |call grep search                                                        |
+| `"read="`                   |lines with "read=" in"                                                  |
+| `-`                         |output from cat                                                         |
+| `-c`                        |count                                                                   |
+
+
+Once basecalling has completed you can create a single `.fastq` file for onward analysis. Piping outputs from `cat pass/*.fastq` can also be used if storage is limited.  
 
 ```
 
@@ -151,8 +163,6 @@ seqkit sana  workshop.reads.fastq -o rescued.workshop.reads.fastq
 
 ```
 
-
-
 ## Taxonomic identification using Kraken2.
 
 Kraken and Kraken2 provide a means to assign taxonomic identification to reads using a k-mer based indexing against a reference database. We provide a slimline reference database compiled for this workshop as well as the minikraken2 database. (ftp://ftp.ccb.jhu.edu/pub/data/kraken2_dbs/minikraken2_v2_8GB_201904_UPDATE.tgz) Other databases such as the Loman labs [microbial-fat-free](https://lomanlab.github.io/mockcommunity/mc_databases.html) and [maxikraken](https://lomanlab.github.io/mockcommunity/mc_databases.html) are also available. 
@@ -187,7 +197,7 @@ How much odd stuff is in the sample?
 Why do you think this has had positives hits in the kraken2 databases?  
 What industry do you think the [brewers](https://www.burningskybeer.com/beers/coolship-release-no-2/) sourced the coolships from?   
 
-Try the assembly again using the minikraken2 database and see how your database can affect your results.
+Try the assembly again using the minikraken2 database and see how your database can affect your results.  
 
 ## Visualization of output
 
@@ -219,12 +229,12 @@ scp USERNAME@IP:/path/to/report.txt ~/Desktop
 ```
 
 It should look something like this:  
-![alt text](https://github.com/BadgerRob/Staging/blob/master/Krona.png "Krona report")
+![alt text](https://github.com/BadgerRob/Staging/blob/master/Krona.png "Krona report")  
 
 
-### Pavian
+### Pavian  
 
-Pavian is an R based program that is useful to produce Sankey plots and much more. It can be run on your local machine if you have R [installed](https://a-little-book-of-r-for-bioinformatics.readthedocs.io/en/latest/src/installr.html). You may need to install `r-base-dev`. To set up Pavian in R on your local machine, open an R terminal and enter the following.
+Pavian is an R based program that is useful to produce Sankey plots and much more. It can be run on your local machine if you have R [installed](https://a-little-book-of-r-for-bioinformatics.readthedocs.io/en/latest/src/installr.html). You may need to install `r-base-dev`. To set up Pavian in R on your local machine, open an R terminal and enter the following.  
 
 ```
 if (!require(remotes)) { install.packages("remotes") }
@@ -232,7 +242,7 @@ remotes::install_github("fbreitwieser/pavian")
 
 ```
 
-To run Pavian enter into R terminal:
+To run Pavian enter into R terminal:  
 
 ```
 
@@ -249,11 +259,11 @@ shiny::runGitHub("fbreitwieser/pavian", subdir = "inst/shinyapp")
 
 ```
 
-You should now be presented with a user interface to which you can browse for your report files on your local machine.
+You should now be presented with a user interface to which you can browse for your report files on your local machine.  
 
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/pavin_snap.png "Pavian input")
 
-Once you have loaded your file, navigate to the "sample" tab and try interacting with the plot. It should look something like this:
+Once you have loaded your file, navigate to the "sample" tab and try interacting with the plot. It should look something like this:  
 
 ![alt text](https://github.com/BadgerRob/Staging/blob/master/kraken.png)
 
@@ -262,18 +272,31 @@ How to the different databases affect your results?
 How does read depth affect your results?  
 How does basecalling mode affect your results?  
 
-##Assembly
+## Assembly minimap2/miniasm/racon
+
+### Minimap2  
+
+[Minimap2](https://github.com/lh3/minimap2) is a program that has been developed to deal with mapping long and noisy raw nanopore reads. Two modes are used in the following assembly, `minimap2 -x ava-ont` and `minimap2 -ax map-ont`. The former performs an exaustive "All v ALL" pairwise alignments on the read sets to find and map overlaps between reads. The latter maps long noisy reads to a reference sequence. Minimap2 was developed to replace BWA for mapping long noisy reads from both nanopore and Pac-Bio sequencing runs. 
+
 
 ```
 minimap2 -x ava-ont -t 8 workshop.reads.fastq workshop.reads.fastq | gzip -1 > workshop.paf.gz
 
 ```
+Note: The output of this file is in a compressed pairwise alignment format (.paf.gz).  
+
+
+### Miniasm  
+
+[Miniasm] (https://github.com/lh3/miniasm) is then used to perform an assembly using the identified overlaps in the `.paf` file. No error correction is undertaken thus the assembled contigs will have the aproximate error structure of raw reads.  
 
 ```
 miniasm -f workshop.reads.fastq qorkshop.paf.gz > workshop.contigs.gfa
+
 ```
 
-gfa to .fasta
+Miniasm produces a graphical fragment assembly (`.gfa`) file containing assembled contigs and contig overlaps. This file type can be viewed in the program `bandage` to give a visual representation of a metagenome. However, due to the error associated with this aproach, read polishing can be undertaken to increase sequence accuracy. Contigs can be extracted from a `.gfa` file and stored in a .fasta format using the following awk command.
+
 ```
 
 awk '/^S/{print ">"$2"\n"$3}' workshop.contigs.gfa | fold > workshop.contigs.fasta
@@ -282,22 +305,35 @@ awk '/^S/{print ">"$2"\n"$3}' workshop.contigs.gfa | fold > workshop.contigs.fas
 
 ## Polishing with racon
 
+Polishing a sequence refers to the process of identifying and correcting errors in a sequence based on a consensus or raw reads. Some methods use raw signal data from the fast5 files to aid in the identification and correction. A number of polishing programs are in circulation which include the gold standard [Nanopolish](https://github.com/jts/nanopolish), the ONT release [Medaka](https://github.com/nanoporetech/medaka) and the ultra fast [Racon](https://github.com/isovic/racon). Each approach has advantages and disadvantages to their use. Nanopolish is computationally intensive but uses raw signal data contained in fast5 files to aid error correction. This also relies on the retention of the large `.fast5` files from a sequencing run. Medaka is reliable and relitivly fast and raccon is ultra fast but does not use raw squiggle data.  
+
+The first step in polishing an assembly is to remap the raw reads back to the assembled contigs. This is done using `minimap2 -ax map-ont`.
+
 ```
-minimap2 -t 8 -x map-ont workshop.contigs.fasta workshop.reads.fastq | gzip -1 > workshop.reads_to_assembly.paf.gz
+minimap2 -t 8 -ax map-ont workshop.contigs.fasta workshop.reads.fastq | gzip -1 > workshop.reads_to_assembly.paf.gz
 ```
 
-Polish with racon
+Racon is then used to polish the assembled contigs using the mapped raw reads.  
 
 ```
 
 racon -t 12 workshop.reads.fastq workshop.reads_to_assembly.paf.gz workshop.contigs.fasta > workshop.contigs.racon.fasta
 
 ```
-kraken2 on assembly
+
+
+kraken2 can be run on the assembled contigs in the same way as before, using multiple databases.
+
 ```
+
 kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report workshop.contigs.racon.txt workshop.contigs.racon.fasta > workshop.contigs.kraken
 
 ```
+
+###Observations
+
+
+
 
 
 Flye assembly
