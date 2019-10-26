@@ -1,4 +1,4 @@
-# EBAME 2019:
+# EBAME 2019: Longread / Nanopore sequencing Workshop
 # Metagenomics of a gueuze type lambic beer from Sussex.
 
 
@@ -79,7 +79,8 @@ watch -n 10 'find . -name "*.fastq" -exec grep 'read' -c {} \; | paste -sd+ | bc
 How long did the different runs take?  
 How do the identities differ with simple blast searching NCBI?  
 
-## Read QC
+## Read QC  
+
 Count the number of fastq reads in the Guppy pass dir.
 
 ```
@@ -88,20 +89,36 @@ cat pass/*.fastq | grep 'read=' - -c
 
 ```
 
-Create a single file for onward analysis
+Create a single `.fastq` file for onward analysis.
 
 ```
 
 cat path/to/pass/*.fastq > workshop.reads.fastq
 
 ```
+### Resample reads (optional extra)
 
-Nanoplot
+If required, you can resample reads using fastqSample command from the program canu.
+To resample 15,000 reads with the same length distrobution but no less than 1000bp:
+
+```
+
+fastqSample -U -p 150000 -m 1000 -I /path/to/plasmid_cat_chop.fastq -O /path/to/Plasmid_cat_chop_15k.fastq
+
+```
+
+`-U` = unpaired reads  
+`-p` = total number of random reads (add `-max` to get longest reads)  
+`-m` = minimum read lenght  
+`-I` [INPUT FILE]  
+`-O` [OUTPUT FILE]  
+
+Note that --max can be used to sample from the longest to shortest reads.  
+
+### Nanoplot
 
 
-## Sorting and filtering reads 
-
-FastqSample
+## Fixing broken reads with 
 
 
 ## Taxonomic identification using Kraken2.
