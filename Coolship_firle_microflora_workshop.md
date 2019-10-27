@@ -373,6 +373,8 @@ flye --nano-raw path/to/workshop.reads.fastq -g 1g -o flye_workshop/ -t 8 --meta
 | `-t`                        |number of threads                                                       |
 | `--meta`                    |metagenome assembly rules                                               |
 
+Note: The assembly can now be polished with one of the formentioned programs.
+
 ### Observations
 
 How does the fly assembly differ from the minimap2/miniasm assembly?  
