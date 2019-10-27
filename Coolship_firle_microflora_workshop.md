@@ -38,7 +38,7 @@ Organise into groups of 3 - 4.
 Sample fast5 files:  
 Sample quick fastq files:  
 Sample high accuracy fastq files:  
-minicraken database:  
+minikraken database:  
 workshop database:  
 
 
