@@ -33,6 +33,25 @@ Lysis was undertaken at 55 degrees C with SDS, beta mercaptoethanol and protinas
 
 Organise into groups of 3 - 4.  
 
+Login to MetaHood VM
+
+First we need to download the VM repo to get an install script:
+```
+mkdir ~/repos
+
+cd repos
+
+git clone https://github.com/Sebastien-Raguideau/Ebame19-Quince.git
+
+cd Ebame19-Quince
+
+./init.sh
+
+cd ~
+
+```
+
+
 ## Data  
 
 Sample fast5 files:  
@@ -42,19 +61,51 @@ minikraken database:
 workshop database:  
 
 
+Data is here:
+```
+ls /var/autofs/ifb/public/teachdata/ebame/2019/LongReadTutorial
+```
+
+
 ## Basecalling
 
 Nanopore sequencing results in fast5 files that contain raw signal data termed "squiggles". This signal needs to be processed into the `.fastq` format for onward analysis. This is undertaken through a process called 'basecalling'. The current program released for use by Oxford Nanopore is called `Guppy` and can be implemented in both GPU and CPU modes. Two forms of basecalling are available, 'fast' and 'high-accuracy' (HAC). HAC basecalling implements a 'flipflop' basecalling algorithm which is highly computationally intensive and thus slower than the fast basecalling method. Compare the two methods on the subset of fast5 files.  
 
-Guppy fast basecalling:
+Get the fast5 reads into a dir on our /mnt directories:
 ```
-guppy_basecaller -r --input_path path/to/fast5/ --save_path /path/to/fastq/ --qscore_filtering --min_qscore 7 --cpu_threads_per_caller 4 --num_callers 2
+mkdir /mnt/Projects
+
+ln -s /mnt/Projects ~
+
+mkdir ~/Projects/LongReads
+
+cd Projects/LongReads
+
+cp /var/autofs/ifb/public/teachdata/ebame/2019/LongReadTutorial/coolship20.tar.gz .
+
+tar -xvzf coolship20.tar.gz
 
 ```
+
+Now just select two fast5 files:
+```
+mkdir coolship2
+cp coolship20/FAK85494_31cea227a0531215313a902ede383374cb0ea7a6_106.fast5
+cp coolship20/FAK85494_31cea227a0531215313a902ede383374cb0ea7a6_106.fast5 coolship2
+cp coolship20/FAK85494_31cea227a0531215313a902ede383374cb0ea7a6_109.fast5 coolship2
+rm coolship20.tar.gz
+rm -r coolship20
+```
+
+Guppy fast basecalling:
+```
+guppy_basecaller -r --input_path coolship2 --save_path coolship2_fastq --qscore_filtering --min_qscore 7 --cpu_threads_per_caller 4 --num_callers 2 --flowcell FLO-MIN106 --kit SQK-LSK109
+```
+
 
 Guppy high_accuracy basecalling:
 ```
-guppy_basecaller -r --input_path path/to/fast5/ --save_path /path/to/fastq/ --config dna_r9.4.1_450bps_hac.cfg  --qscore_filtering --min_qscore 7 --cpu_threads_per_caller 4 --num_callers 2
+guppy_basecaller -r --input_path coolship2 --save_path coolship2_fastq_hq --config dna_r9.4.1_450bps_hac.cfg  --qscore_filtering --min_qscore 7 --cpu_threads_per_caller 4 --num_callers 2 --flowcell FLO-MIN106 --kit SQK-LSK109
 
 ```
 
@@ -135,10 +186,19 @@ cat path/to/pass/*.fastq > workshop.reads.fastq
 If required, you can resample reads using fastqSample command from the program Canu.
 To resample 15,000 reads with the same length distribution but no less than 1000bp:
 
+Need to activate LongReads environment **now**
 ```
-cp path/to/workshop.reads.fastq path/to/reads.fastq.u.fastq
+conda activate LongReads
+```
 
-fastqSample -U -p 150000 -m 1000 -I /path/to/reads.fastq -O /path/to/reads.downsample.fastq.
+Copy in precalled reads:
+```
+
+cd ~/Projects/LongReads
+
+cp /var/autofs/ifb/public/teachdata/ebame/2019/LongReadTutorial/workshop.reads.fastq workshop.reads.u.fastq
+
+fastqSample -U -p 150000 -m 1000 -I workshop.reads -O workshop.reads.downsample.fastq
 
 ```
 Note: the file name must be `FILENAME.fastq.u.fastq` but the path must show `FILENAME.fastq`.  
@@ -161,13 +221,11 @@ Note: the file name must be `FILENAME.fastq.u.fastq` but the path must show `FIL
 
 Sometimes errors can occur when preparing a `.fastq` file for analysis. This can cause problems in down stream processing. [Seqkit](https://github.com/shenwei356/seqkit) is designed to help identify errors and salvage broken `.fastq` files.
 
-If not installed, Seqkit can be installed in your conda environment by:
-
+```
+cd ~/Projects/LongReads
+cp /var/autofs/ifb/public/teachdata/ebame/2019/LongReadTutorial/workshop.reads.fastq .
 ```
 
-conda install -c bioconda seqkit
-
-```
 
 Run [Seqkit sana](https://bioinf.shenwei.me/seqkit/usage/#sana) to sanitize a `.fastq` file.  
 
@@ -181,15 +239,41 @@ seqkit sana  workshop.reads.fastq -o rescued.workshop.reads.fastq
 
 Kraken and Kraken2 provide a means to assign taxonomic identification to reads using a k-mer based indexing against a reference database. We provide a small reference database compiled for this workshop as well as the minikraken2 database. (ftp://ftp.ccb.jhu.edu/pub/data/kraken2_dbs/minikraken2_v2_8GB_201904_UPDATE.tgz) Other databases such as the Loman labs [microbial-fat-free](https://lomanlab.github.io/mockcommunity/mc_databases.html) and [maxikraken](https://lomanlab.github.io/mockcommunity/mc_databases.html) are also available. 
 
+### Install Databases
+
+```
+cd /mnt/Projects/LongReads
+
+mkdir Databases
+
+cp /var/autofs/ifb/public/teachdata/ebame/2019/LongReadTutorial/minikraken2_v2_8GB_201904_UPDATE.tgz Databases
+
+cd Databases
+
+tar -xvzf minikraken2_v2_8GB_201904_UPDATE.tgz
+
+```
+
 ### Optional extra information
 
 Custom reference databases can be created using `kraken2-build --download-library`, `--download-taxonomy` and `--build` [commands](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual#custom-databases). Mick Wattson has written [Perl scripts](https://github.com/mw55309/Kraken_db_install_scripts) to aid in customisation. An example of the creation of custom databases by the Loman lab can be found [here](http://porecamp.github.io/2017/metagenomics.html).
 
 Run `kraken2` on the sanitized `workshop.reads.fastq` file provided in this tutorial using the `kraken2_workshop_db`. 
 
+**Need to activate conda environment**
+
+```
+conda activate LongReads
 ```
 
-kraken2 --db path/to/kraken2_workshop_db/ --threads 8 --report path/to/output/report.txt path/to/workshop.reads.fastq > path/to/output
+
+```
+
+cd Projects/LongReads
+
+mkdir Kraken_out
+
+kraken2 --db Databases/minikraken2_v2_8GB_201904_UPDATE --threads 4 --report Kraken_out/report.txt workshop.reads.fastq > Kraken_out/workshop.reads.krak
 
 ```
 
@@ -221,9 +305,18 @@ While scrolling through the kraken2 outputs can be fun and somewhat alarming, it
 
 Krona produces an interactive `.html` file based on your `--report` file. While not fully integrated with kraken2, the use of the report file gives an overall approximation of your sample diversity based on individual reads. Try this on the kraken outputs from the different databases and/or basecalling modes. 
 
+Need to update taxonomy first:
+```
+cd /var/lib/miniconda3/envs/LongReads/opt/krona
+./updateTaxonomy.sh
+ 
 ```
 
-ktImportTaxonomy -q 2 -t 3 report.txt -o kraken_krona_report.html
+```
+
+cd ~/Projects/LongReads
+
+ktImportTaxonomy -q 2 -t 3 Kraken_out/report.txt -o kraken_krona_report.html
 
 ```
 |Flag                         | Description                                                            | 
@@ -251,8 +344,10 @@ It should look something like this:
 [Pavian](https://github.com/fbreitwieser/pavian) is an R based program that is useful to produce Sankey plots and much more. It can be run on your local machine if you have R [installed](https://a-little-book-of-r-for-bioinformatics.readthedocs.io/en/latest/src/installr.html). You may need to install `r-base-dev`. To set up Pavian in R on your local machine, open an R terminal and enter the following.  
 
 ```
-if (!require(remotes)) { install.packages("remotes") }
-remotes::install_github("fbreitwieser/pavian")
+sudo R
+
+>if (!require(remotes)) { install.packages("remotes") }
+>remotes::install_github("fbreitwieser/pavian")
 
 ```
 
@@ -260,7 +355,7 @@ To run Pavian enter into R terminal:
 
 ```
 
-pavian::runApp(port=5000)
+>pavian::runApp(port=5000)
 
 ```
 You can now access Pavian at http://127.0.0.1:5000 in a web browser if it does not load automatically.  
@@ -305,7 +400,7 @@ Note: The output of this file is in a compressed pairwise alignment format (.paf
 [Miniasm](https://github.com/lh3/miniasm) is then used to perform an assembly using the identified overlaps in the `.paf` file. No error correction is undertaken thus the assembled contigs will have the approximate error structure of raw reads.  
 
 ```
-miniasm -f workshop.reads.fastq qorkshop.paf.gz > workshop.contigs.gfa
+miniasm -f workshop.reads.fastq workshop.paf.gz > workshop.contigs.gfa
 
 ```
 
@@ -332,7 +427,7 @@ Racon is then used to polish the assembled contigs using the mapped raw reads.
 
 ```
 
-racon -t 12 workshop.reads.fastq workshop.reads_to_assembly.paf.gz workshop.contigs.fasta > workshop.contigs.racon.fasta
+racon -t 8 workshop.reads.fastq workshop.reads_to_assembly.paf.gz workshop.contigs.fasta > workshop.contigs.racon.fasta
 
 ```
 
@@ -385,3 +480,6 @@ How does it differ from the raw read Kraken2 report?
 Long read sequencing provides a means to assemble metagenomes. Due to the length of reads, assemblies of larger complete contigs are possible relative to short, high accuracy reads. This often permits a greater understanding of community composition, genetic diversity as well as a greater resolution of the genetic context of genes of interest.  
 
 So, what is _"Firle Microflora"_?
+
+![alt text](https://github.com/BadgerRob/Ebame5/blob/master/assembled.png)
+_Assembly with Flye_
