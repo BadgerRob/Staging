@@ -212,9 +212,9 @@ def main(argv):
            '--genome medaka_{}/consensus.fasta ' \
            '--frags medaka_{}/{}.out.bam ' \
            '--outdir results_{}' .format(outputdir,
-                                       outputdir,
-                                       outputdir,
-                                       outputdir)
+                                         outputdir,
+                                         outputdir,
+                                         outputdir)
    os.system(bwai)
    os.system(bwaa)
    os.system(sami)
