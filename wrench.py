@@ -17,7 +17,7 @@ def main(argv):
    input_fastQ_IluminaB = ''    #Input for secondary illumina reads
    threads = ''                 #Sets threads to use for all sections
    polishing = 'racon_'         #prefex for polishing directory naming
-   rounds = ''                  #Sets number of racon rounds
+   rounds = '4'                 #Sets number of racon rounds
    cutoff = '1500'              #Sets filtlong read length cutoff
    keep = '90'                  #Sets filtlong read percentage to keep
    qual = '15'                  #Sets filtlong quality weighting
@@ -27,9 +27,10 @@ def main(argv):
    try:
       opts, args = getopt.getopt(argv,"hi:r:l:m:g:t:o:u:c:k:q:p:",["idir=", "reads=", "ilumnA=", "ilumnB=", "genomesize=", "threds=", "odir=", "rounds=", "cutoff=","keep=","qual=","pairing="])
    except getopt.GetoptError:
-      print ('wrench.py -r [path/to/ONT.fastq] -l [path to ILLUMINA1.fastq] -g [genome size estimate] -u [racon rounds] -o [output prefex] \n'
+      print ('wrench.py -r [path/to/ONT.fastq] -l [path to ILLUMINA1.fastq] -g [genome size estimate] -o [output prefex] \n'
              '\n'
              '-t <threads>                (default 6) \n'
+             '-u <racon rounds>           (default 4)\n'
              '-c <read length cutoff>     (default 1500bp)\n'
              '-q <read quality weighting> (default 15)\n'
              '-k <percent reads to keep>  (default 90) ')
@@ -48,11 +49,12 @@ def main(argv):
                 '-k --keep       (int) <percent of reads to retain with q weighting> \n'
                 '-q --qual       (int) <quality weighting for ONT.fastq filtering \n' 
                 '\n'
-                'wrench.py -r [path/to/ONT.fastq] -l [path to ILLUMINA1.fastq] -g [genome size estimate] -u [racon rounds] -o [output prefex] \n'
+                'wrench.py -r [path/to/ONT.fastq] -l [path to ILLUMINA1.fastq] -g [genome size estimate] -o [output prefex] \n'
                 '\n'
                 'OPTIONAL \n'
                 '-m <path to illumina B reads>'
                 '-t <threads>                (default 6) \n'
+                '-u <racon rounds>           (default 4)\n'
                 '-c <read length cutoff>     (default 1500bp)\n'
                 '-q <read quality weighting> (default 15)\n'
                 '-k <percent reads to keep>  (default 90) \n'
