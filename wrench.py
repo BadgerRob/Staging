@@ -18,9 +18,9 @@ def main(argv):
    threads = ''                 #Sets threads to use for all sections
    polishing = 'racon_'         #prefex for polishing directory naming
    rounds = '4'                 #Sets number of racon rounds
-   cutoff = '1500'              #Sets filtlong read length cutoff
+   cutoff = '1250'              #Sets filtlong read length cutoff
    keep = '90'                  #Sets filtlong read percentage to keep
-   qual = '15'                  #Sets filtlong quality weighting
+   qual = '12'                  #Sets filtlong quality weighting
    pairing = '-p'               #Sets BWA flag to -p using interleaved illumina reads. If IlumnaB used then BWA -p removed.
    n = int(1)                   #Used for racon round loop for output files.
 
@@ -40,14 +40,14 @@ def main(argv):
          print ('wrench.py \n' 
                 '-r --reads            <full path/to/ONT.fastq> \n'
                 '-l --ilumnA           <full path to ILLUMINA_1.fastq> \n'
-                '-m --ilumnB           <optional: full path to ILLUMNA_2.fastq> \n'
                 '-g --genomesize       <genome size estimate> \n'
                 '-o --odir             <output tag> \n'
+                '-m --ilumnB           <optional: full path to ILLUMNA_2.fastq> \n'
                 '-t --threads    (int) <optional: number of threads> \n'
-                '-u --rounds     (int) <number of racon polishing rounds> \n'
-                '-c --cutoff     (int) <read length: < (int) discarded > \n'
-                '-k --keep       (int) <percent of reads to retain with q weighting> \n'
-                '-q --qual       (int) <quality weighting for ONT.fastq filtering \n' 
+                '-u --rounds     (int) <optional: number of racon polishing rounds (default 4)> \n'
+                '-c --cutoff     (int) <optional: read length < (int) discarded (default 1250) > \n'
+                '-k --keep       (int) <optional: percent of reads to retain (default 90)> \n'
+                '-q --qual       (int) <optional: quality weighting for ONT.fastq filtering (default 12) \n' 
                 '\n'
                 'wrench.py -r [path/to/ONT.fastq] -l [path to ILLUMINA1.fastq] -g [genome size estimate] -o [output prefex] \n'
                 '\n'
@@ -59,15 +59,15 @@ def main(argv):
                 '-q <read quality weighting> (default 15)\n'
                 '-k <percent reads to keep>  (default 90) \n'
                 '\n'
-                'Requirements \n'
+                'Requirements and pipeline: \n'
                 'Filtlong \n'
                 'Flye \n '
                 'Minimap2 \n'
                 'Racon \n'
                 'Medaka \n '
-                'Pilon \n '
                 'BWA \n'
-                'samtools')
+                'Samtools \n'
+                'Pilon \n ')
 
          sys.exit()
       elif opt in ("-i", "--idir"):
@@ -105,10 +105,10 @@ def main(argv):
               '--min_length {} ' \
               ' --keep_percent {} ' \
               ' --mean_q_weight {} ' \
-              ' {} | gzip > reads.q.fastq.gz' .format(cutoff,
-                                                      keep,
-                                                      qual,
-                                                      input_fastQ_ONT)
+              '{} | gzip > reads.q.fastq.gz' .format(cutoff,
+                                                     keep,
+                                                     qual,
+                                                     input_fastQ_ONT)
    os.system(filtlong)
 
 #Read assembly
@@ -134,9 +134,11 @@ def main(argv):
           '-x -6 ' \
           '-g -8 ' \
           '-w 500 ' \
+          '-t {} ' \
           'reads.q.fastq.gz ' \
           '{}/racon_mapped.sam ' \
-          'flye_assembly_{}/assembly.fasta > {}/racon_{}.fasta' .format(polishing+outputdir,
+          'flye_assembly_{}/assembly.fasta > {}/racon_{}.fasta' .format(threads,
+                                                                        polishing+outputdir,
                                                                         outputdir,
                                                                         polishing+outputdir,
                                                                         n)
@@ -158,9 +160,11 @@ def main(argv):
                  '-x -6 ' \
                  '-g -8 ' \
                  '-w 500 ' \
+                 '-t {} ' \
                  'reads.q.fastq.gz ' \
                  '{}/racon_mapped.sam ' \
-                 '{}/racon_{}.fasta > {}/racon_{}.fasta' .format(polishing+outputdir,
+                 '{}/racon_{}.fasta > {}/racon_{}.fasta' .format(threads,
+                                                                 polishing+outputdir,
                                                                  polishing+outputdir,
                                                                  n,
                                                                  polishing+outputdir,
@@ -181,7 +185,7 @@ def main(argv):
          '-o medaka_{} ' \
          '-t {} ' \
          '-m r941_min_high_g303' .format(polishing+outputdir,
-                                         rounds,
+                                         n - 1,
                                          outputdir,
                                          threads)
    os.system(med)
