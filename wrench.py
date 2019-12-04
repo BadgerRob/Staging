@@ -24,7 +24,10 @@ def main(argv):
    pairing = '-p'               #Sets BWA flag to -p using interleaved illumina reads. If IlumnaB used then BWA -p removed.
    n = int(1)                   #Used for racon round loop for output files.
    dir = '/'
+   bugfix = 'export LC_ALL=C; unset LANGUAGE' #random non-perminant fix for racon compiler issue on cluster (unknown issue?). 
+os.system(bugfix)
 
+	
    try:
       opts, args = getopt.getopt(argv,"hi:r:l:m:g:t:o:u:c:k:q:p:",["idir=", "reads=", "ilumnA=", "ilumnB=", "genomesize=", "threds=", "odir=", "rounds=", "cutoff=","keep=","qual=","pairing="])
    except getopt.GetoptError:
