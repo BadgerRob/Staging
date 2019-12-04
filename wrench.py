@@ -42,11 +42,11 @@ os.system(bugfix)
    for opt, arg in opts:
       if opt == '-h':
          print ('wrench.py \n' 
-                '-r --reads            <full path/to/ONT.fastq> \n'
-                '-l --ilumnA           <full path to ILLUMINA_1.fastq> \n'
+                '-r --reads            <path/to/ONT.fastq> \n'
+                '-l --ilumnA           <path to ILLUMINA_1.fastq> \n'
                 '-g --genomesize       <genome size estimate> \n'
                 '-o --odir             <output tag> \n'
-                '-m --ilumnB           <optional: full path to ILLUMNA_2.fastq> \n'
+                '-m --ilumnB           <optional: path to ILLUMNA_2.fastq> \n'
                 '-t --threads    (int) <optional: number of threads> \n'
                 '-u --rounds     (int) <optional: number of racon polishing rounds (default 4)> \n'
                 '-c --cutoff     (int) <optional: read length < (int) discarded (default 1250) > \n'
@@ -131,7 +131,7 @@ os.system(bugfix)
    map1 = 'minimap2 ' \
           '-ax map-ont {0}/flye_assembly_{0}/assembly.fasta ' \
           '{0}/reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
-								polishing+outputdir)
+								    polishing+outputdir)
 
    pol1 = 'racon ' \
           '-m 8 ' \
