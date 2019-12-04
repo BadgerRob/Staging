@@ -198,10 +198,10 @@ def main(argv):
    bwaa = 'bwa mem ' \
           '-M ' \
           '{0} ' \
-          '{1}/medaka_{2}/consensus.fasta ' \
+          '{1}/medaka_{1}/consensus.fasta ' \
           '{2} {3} ' \
           '| samtools view -hu -F 4 - ' \
-          '| samtools sort - > medaka_{1}/{1}.out.bam' .format(pairing,
+          '| samtools sort - > {1}/medaka_{1}/{1}.out.bam' .format(pairing,
 							       outputdir,
 							       input_fastQ_IluminaA,
 							       input_fastQ_IluminaB)
