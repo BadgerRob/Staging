@@ -127,7 +127,7 @@ def main(argv):
 
    map1 = 'minimap2 ' \
           '-ax map-ont {0}/flye_assembly_{0}/assembly.fasta ' \
-          'reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
+          '{0}/reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
 								polishing+outputdir)
 
    pol1 = 'racon ' \
