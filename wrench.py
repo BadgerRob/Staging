@@ -109,7 +109,7 @@ def main(argv):
                                                           keep,
                                                           qual,
                                                           input_fastQ_ONT,
-						                                        outputdir)
+						          outputdir)
    os.system(filtlong)
 
 #Read assembly
@@ -119,8 +119,8 @@ def main(argv):
           '--out-dir {0}/flye_assembly_{0} ' \
           '--genome-size {1} ' \
           '--threads {2}' .format(outputdir,
-			                         genomesize,
-                                  threads)
+				  genomesize,
+				  threads)
    os.system(flye)
 
 #Racon polishing
@@ -128,7 +128,7 @@ def main(argv):
    map1 = 'minimap2 ' \
           '-ax map-ont {0}/flye_assembly_{0}/assembly.fasta ' \
           'reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
-							                                           polishing+outputdir)
+								polishing+outputdir)
 
    pol1 = 'racon ' \
           '-m 8 ' \
@@ -139,9 +139,9 @@ def main(argv):
           '{1}/reads.q.fastq.gz ' \
           '{1}/{2}/racon_mapped.sam ' \
           '{1}/flye_assembly_{1}/assembly.fasta > {1}/{2}/racon_{3}.fasta' .format(threads,
-								       		                                               outputdir,
-								  	                                                        polishing+outputdir,
-                                                                   	              n)
+										   outputdir,
+										   polishing+outputdir,
+										   n)
 
    os.system(map1)
    os.system(pol1)
@@ -153,8 +153,8 @@ def main(argv):
                  '-ax map-ont ' \
                  '{0}/{1}/racon_{2}.fasta ' \
                  'reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
-								                                               polishing+outputdir,
-                                                                       n)
+								       polishing+outputdir,
+								       n)
       pol_loop = 'racon ' \
                  '-m 8 ' \
                  '-x -6 ' \
@@ -164,15 +164,15 @@ def main(argv):
                  'reads.q.fastq.gz ' \
                  '{1}/{2}/racon_mapped.sam ' \
                  '{1}/{2}/racon_{3}.fasta > {1}/{2}/racon_{4}.fasta' .format(threads,
-								                                                     outputdir,
-                                                                    	        polishing+outputdir,
-                                                                    	        n,
-                                                                    	        n + 1) #+1 to racon file name
+									     outputdir,
+									     polishing+outputdir,
+									     n,
+									     n + 1) #+1 to racon file name
 
       clean = 'rm ' \
               '{0}/{1}/racon_{2}.fasta' .format(outputdir,
-					                                 polishing+outputdir,
-                                                n)
+						polishing+outputdir,
+						n)
       os.system(map_loop)
       os.system(pol_loop)
       os.system(clean) #Removes previous racon round
@@ -184,10 +184,10 @@ def main(argv):
          '-d {0}/{1}/racon_{2}.fasta ' \
          '-o {0}/medaka_{0} ' \
          '-t {3} ' \
-         '-m r941_min_high_g303' .format(outputdir	
-					                          polishing+outputdir,
-                                         n - 1,
-                                         threads)
+         '-m r941_min_high_g303' .format(outputdir,
+					 polishing+outputdir,
+					 n - 1,
+					 threads)
    os.system(med)
 
 #Pilon hybrid assembly
@@ -202,9 +202,9 @@ def main(argv):
           '{2} {3} ' \
           '| samtools view -hu -F 4 - ' \
           '| samtools sort - > medaka_{1}/{1}.out.bam' .format(pairing,
-        						                                       outputdir,
-                                                               input_fastQ_IluminaA,
-                                                               input_fastQ_IluminaB)
+							       outputdir,
+							       input_fastQ_IluminaA,
+							       input_fastQ_IluminaB)
 
    sami = 'samtools index ' \
           '{0}/medaka_{0}/{0}.out.bam' .format(outputdir)
