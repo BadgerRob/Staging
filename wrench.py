@@ -24,29 +24,27 @@ def main(argv):
    pairing = '-p'               #Sets BWA flag to -p using interleaved illumina reads. If IlumnaB used then BWA -p removed.
    n = int(1)                   #Used for racon round loop for output files.
    dirs = '/'
-   bugfix = 'export LC_ALL=C; unset LANGUAGE' #fix for racon compiler issue on cluster. 
+   fix = 'export LC_ALL=C; unset LANGUAGE' #Fix for cluster
 
-
-	
    try:
       opts, args = getopt.getopt(argv,"hi:r:l:m:g:t:o:u:c:k:q:p:",["idir=", "reads=", "ilumnA=", "ilumnB=", "genomesize=", "threds=", "odir=", "rounds=", "cutoff=","keep=","qual=","pairing="])
    except getopt.GetoptError:
       print ('wrench.py -r [path/to/ONT.fastq] -l [path to ILLUMINA1.fastq] -g [genome size estimate] -o [output prefex] \n'
              '\n'
              '-t <threads>                (default 6) \n'
-             '-u <racon rounds>           (default 4) \n'
-             '-c <read length cutoff>     (default 1250) \n'
-             '-q <read quality weighting> (default 12) \n'
+             '-u <racon rounds>           (default 4)\n'
+             '-c <read length cutoff>     (default 1500bp)\n'
+             '-q <read quality weighting> (default 15)\n'
              '-k <percent reads to keep>  (default 90) ')
       sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
          print ('wrench.py \n' 
-                '-r --reads            <path/to/ONT.fastq> \n'
-                '-l --ilumnA           <path to ILLUMINA_1.fastq> \n'
+                '-r --reads            <full path/to/ONT.fastq> \n'
+                '-l --ilumnA           <full path to ILLUMINA_1.fastq> \n'
                 '-g --genomesize       <genome size estimate> \n'
                 '-o --odir             <output tag> \n'
-                '-m --ilumnB           <optional: path to ILLUMNA_2.fastq> \n'
+                '-m --ilumnB           <optional: full path to ILLUMNA_2.fastq> \n'
                 '-t --threads    (int) <optional: number of threads> \n'
                 '-u --rounds     (int) <optional: number of racon polishing rounds (default 4)> \n'
                 '-c --cutoff     (int) <optional: read length < (int) discarded (default 1250) > \n'
@@ -99,6 +97,7 @@ def main(argv):
          qual = int(arg)
 
 #Make dir
+   os.system(fix)
    os.mkdir(outputdir)
    os.mkdir(outputdir+dirs+polishing+outputdir)
 
@@ -114,8 +113,7 @@ def main(argv):
                                                           input_fastQ_ONT,
 						          outputdir)
    os.system(filtlong)
-   os.system(bugfix)
-	
+
 #Read assembly
    flye = 'flye ' \
           '--nano-raw {0}/reads.q.fastq.gz ' \
@@ -156,7 +154,7 @@ def main(argv):
       map_loop = 'minimap2 ' \
                  '-ax map-ont ' \
                  '{0}/{1}/racon_{2}.fasta ' \
-                 'reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
+                 '{0}/reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
 								       polishing+outputdir,
 								       n)
       pol_loop = 'racon ' \
@@ -165,7 +163,7 @@ def main(argv):
                  '-g -8 ' \
                  '-w 500 ' \
                  '-t {0} ' \
-                 'reads.q.fastq.gz ' \
+                 '{1}/reads.q.fastq.gz ' \
                  '{1}/{2}/racon_mapped.sam ' \
                  '{1}/{2}/racon_{3}.fasta > {1}/{2}/racon_{4}.fasta' .format(threads,
 									     outputdir,
@@ -206,9 +204,9 @@ def main(argv):
           '{2} {3} ' \
           '| samtools view -hu -F 4 - ' \
           '| samtools sort - > {1}/medaka_{1}/{1}.out.bam' .format(pairing,
-								   outputdir,
-								   input_fastQ_IluminaA,
-								   input_fastQ_IluminaB)
+							       outputdir,
+							       input_fastQ_IluminaA,
+							       input_fastQ_IluminaB)
 
    sami = 'samtools index ' \
           '{0}/medaka_{0}/{0}.out.bam' .format(outputdir)
