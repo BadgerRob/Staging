@@ -23,7 +23,7 @@ def main(argv):
    qual = '12'                  #Sets filtlong quality weighting
    pairing = '-p'               #Sets BWA flag to -p using interleaved illumina reads. If IlumnaB used then BWA -p removed.
    n = int(1)                   #Used for racon round loop for output files.
-   dir = '/'
+   dirs = '/'
    bugfix = 'export LC_ALL=C; unset LANGUAGE' #random non-perminant fix for racon compiler issue on cluster (unknown issue?). 
 os.system(bugfix)
 
@@ -100,7 +100,7 @@ os.system(bugfix)
 
 #Make dir
    os.mkdir(outputdir)
-   os.mkdir(outputdir+dir+polishing+outputdir)
+   os.mkdir(outputdir+dirs+polishing+outputdir)
 
 
 #Read filtering
