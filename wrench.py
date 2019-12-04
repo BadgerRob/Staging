@@ -23,6 +23,7 @@ def main(argv):
    qual = '12'                  #Sets filtlong quality weighting
    pairing = '-p'               #Sets BWA flag to -p using interleaved illumina reads. If IlumnaB used then BWA -p removed.
    n = int(1)                   #Used for racon round loop for output files.
+   dir = '/'
 
    try:
       opts, args = getopt.getopt(argv,"hi:r:l:m:g:t:o:u:c:k:q:p:",["idir=", "reads=", "ilumnA=", "ilumnB=", "genomesize=", "threds=", "odir=", "rounds=", "cutoff=","keep=","qual=","pairing="])
@@ -96,7 +97,7 @@ def main(argv):
 
 #Make dir
    os.mkdir(outputdir)
-   os.mkdir(outputdir/polishing+outputdir)
+   os.mkdir(outputdir+dir+polishing+outputdir)
 
 
 #Read filtering
