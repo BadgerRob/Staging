@@ -24,8 +24,8 @@ def main(argv):
    pairing = '-p'               #Sets BWA flag to -p using interleaved illumina reads. If IlumnaB used then BWA -p removed.
    n = int(1)                   #Used for racon round loop for output files.
    dirs = '/'
-   bugfix = 'export LC_ALL=C; unset LANGUAGE' #random non-perminant fix for racon compiler issue on cluster (unknown issue?). 
-os.system(bugfix)
+   bugfix = 'export LC_ALL=C; unset LANGUAGE' #fix for racon compiler issue on cluster. 
+
 
 	
    try:
@@ -34,9 +34,9 @@ os.system(bugfix)
       print ('wrench.py -r [path/to/ONT.fastq] -l [path to ILLUMINA1.fastq] -g [genome size estimate] -o [output prefex] \n'
              '\n'
              '-t <threads>                (default 6) \n'
-             '-u <racon rounds>           (default 4)\n'
-             '-c <read length cutoff>     (default 1500bp)\n'
-             '-q <read quality weighting> (default 15)\n'
+             '-u <racon rounds>           (default 4) \n'
+             '-c <read length cutoff>     (default 1250) \n'
+             '-q <read quality weighting> (default 12) \n'
              '-k <percent reads to keep>  (default 90) ')
       sys.exit(2)
    for opt, arg in opts:
@@ -114,7 +114,8 @@ os.system(bugfix)
                                                           input_fastQ_ONT,
 						          outputdir)
    os.system(filtlong)
-
+   os.system(bugfix)
+	
 #Read assembly
    flye = 'flye ' \
           '--nano-raw {0}/reads.q.fastq.gz ' \
@@ -189,7 +190,7 @@ os.system(bugfix)
          '-t {3} ' \
          '-m r941_min_high_g303' .format(outputdir,
 					 polishing+outputdir,
-					 n - 1,
+					 rounds,
 					 threads)
    os.system(med)
 
@@ -205,9 +206,9 @@ os.system(bugfix)
           '{2} {3} ' \
           '| samtools view -hu -F 4 - ' \
           '| samtools sort - > {1}/medaka_{1}/{1}.out.bam' .format(pairing,
-							       outputdir,
-							       input_fastQ_IluminaA,
-							       input_fastQ_IluminaB)
+								   outputdir,
+								   input_fastQ_IluminaA,
+								   input_fastQ_IluminaB)
 
    sami = 'samtools index ' \
           '{0}/medaka_{0}/{0}.out.bam' .format(outputdir)
