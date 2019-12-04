@@ -111,7 +111,7 @@ def main(argv):
                                                           keep,
                                                           qual,
                                                           input_fastQ_ONT,
-						          outputdir)
+							  outputdir)
    os.system(filtlong)
 
 #Read assembly
@@ -155,8 +155,8 @@ def main(argv):
                  '-ax map-ont ' \
                  '{0}/{1}/racon_{2}.fasta ' \
                  '{0}/reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
-								       polishing+outputdir,
-								       n)
+									   polishing+outputdir,
+									   n)
       pol_loop = 'racon ' \
                  '-m 8 ' \
                  '-x -6 ' \
@@ -204,9 +204,9 @@ def main(argv):
           '{2} {3} ' \
           '| samtools view -hu -F 4 - ' \
           '| samtools sort - > {1}/medaka_{1}/{1}.out.bam' .format(pairing,
-							       outputdir,
-							       input_fastQ_IluminaA,
-							       input_fastQ_IluminaB)
+								   outputdir,
+								   input_fastQ_IluminaA,
+								   input_fastQ_IluminaB)
 
    sami = 'samtools index ' \
           '{0}/medaka_{0}/{0}.out.bam' .format(outputdir)
