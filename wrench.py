@@ -94,54 +94,54 @@ def main(argv):
       elif opt in ("-q", "--qual"):
          qual = int(arg)
 
-#Make output directorys
+#Make dir
    os.mkdir(outputdir)
-   os.chdir(outputdir)
+   #os.chdir(outputdir)
    os.mkdir(polishing+outputdir)
 
 
 #Read filtering
    filtlong = 'filtlong ' \
-              '--min_length {} ' \
-              ' --keep_percent {} ' \
-              ' --mean_q_weight {} ' \
-              '{} | gzip > reads.q.fastq.gz' .format(cutoff,
-                                                     keep,
-                                                     qual,
-                                                     input_fastQ_ONT)
+              '--min_length {0} ' \
+              ' --keep_percent {1} ' \
+              ' --mean_q_weight {2} ' \
+              '{3} | gzip > {4}/reads.q.fastq.gz' .format(cutoff,
+                                                          keep,
+                                                          qual,
+                                                          input_fastQ_ONT,
+						                                        outputdir)
    os.system(filtlong)
 
 #Read assembly
    flye = 'flye ' \
-          '--nano-raw reads.q.fastq.gz ' \
+          '--nano-raw {0}/reads.q.fastq.gz ' \
           '--plasmids ' \
-          '--out-dir flye_assembly_{} ' \
-          '--genome-size {} ' \
-          '--threads {}' .format(outputdir,
-                                 genomesize,
-                                 threads)
+          '--out-dir {0}/flye_assembly_{0} ' \
+          '--genome-size {1} ' \
+          '--threads {2}' .format(outputdir,
+			                         genomesize,
+                                  threads)
    os.system(flye)
 
 #Racon polishing
 
    map1 = 'minimap2 ' \
-          '-ax map-ont flye_assembly_{}/assembly.fasta ' \
-          'reads.q.fastq.gz > {}/racon_mapped.sam' .format(outputdir,
-                                                           polishing+outputdir)
+          '-ax map-ont {0}/flye_assembly_{0}/assembly.fasta ' \
+          'reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
+							                                           polishing+outputdir)
 
    pol1 = 'racon ' \
           '-m 8 ' \
           '-x -6 ' \
           '-g -8 ' \
           '-w 500 ' \
-          '-t {} ' \
-          'reads.q.fastq.gz ' \
-          '{}/racon_mapped.sam ' \
-          'flye_assembly_{}/assembly.fasta > {}/racon_{}.fasta' .format(threads,
-                                                                        polishing+outputdir,
-                                                                        outputdir,
-                                                                        polishing+outputdir,
-                                                                        n)
+          '-t {0} ' \
+          '{1}/reads.q.fastq.gz ' \
+          '{1}/{2}/racon_mapped.sam ' \
+          '{1}/flye_assembly_{1}/assembly.fasta > {1}/{2}/racon_{3}.fasta' .format(threads,
+								       		                                               outputdir,
+								  	                                                        polishing+outputdir,
+                                                                   	              n)
 
    os.system(map1)
    os.system(pol1)
@@ -151,28 +151,28 @@ def main(argv):
    for x in range (1,rounds):
       map_loop = 'minimap2 ' \
                  '-ax map-ont ' \
-                 '{}/racon_{}.fasta ' \
-                 'reads.q.fastq.gz > {}/racon_mapped.sam' .format(polishing+outputdir,
-                                                                  n,
-                                                                  polishing+outputdir)
+                 '{0}/{1}/racon_{2}.fasta ' \
+                 'reads.q.fastq.gz > {0}/{1}/racon_mapped.sam' .format(outputdir,
+								                                               polishing+outputdir,
+                                                                       n)
       pol_loop = 'racon ' \
                  '-m 8 ' \
                  '-x -6 ' \
                  '-g -8 ' \
                  '-w 500 ' \
-                 '-t {} ' \
+                 '-t {0} ' \
                  'reads.q.fastq.gz ' \
-                 '{}/racon_mapped.sam ' \
-                 '{}/racon_{}.fasta > {}/racon_{}.fasta' .format(threads,
-                                                                 polishing+outputdir,
-                                                                 polishing+outputdir,
-                                                                 n,
-                                                                 polishing+outputdir,
-                                                                 n + 1) #+1 to racon file name
+                 '{1}/{2}/racon_mapped.sam ' \
+                 '{1}/{2}/racon_{3}.fasta > {1}/{2}/racon_{4}.fasta' .format(threads,
+								                                                     outputdir,
+                                                                    	        polishing+outputdir,
+                                                                    	        n,
+                                                                    	        n + 1) #+1 to racon file name
 
       clean = 'rm ' \
-              '{}/racon_{}.fasta' .format(polishing+outputdir,
-                                          n)
+              '{0}/{1}/racon_{2}.fasta' .format(outputdir,
+					                                 polishing+outputdir,
+                                                n)
       os.system(map_loop)
       os.system(pol_loop)
       os.system(clean) #Removes previous racon round
@@ -180,45 +180,40 @@ def main(argv):
 
 #Medaka polishing
    med = 'medaka_consensus ' \
-         '-i reads.q.fastq.gz ' \
-         '-d {}/racon_{}.fasta ' \
-         '-o medaka_{} ' \
-         '-t {} ' \
-         '-m r941_min_high_g303' .format(polishing+outputdir,
+         '-i {0}/reads.q.fastq.gz ' \
+         '-d {0}/{1}/racon_{2}.fasta ' \
+         '-o {0}/medaka_{0} ' \
+         '-t {3} ' \
+         '-m r941_min_high_g303' .format(outputdir	
+					                          polishing+outputdir,
                                          n - 1,
-                                         outputdir,
                                          threads)
    os.system(med)
 
 #Pilon hybrid assembly
 
    bwai = 'bwa index ' \
-          './medaka_{}/consensus.fasta' .format(outputdir)
+          '{0}/medaka_{0}/consensus.fasta' .format(outputdir)
 
    bwaa = 'bwa mem ' \
           '-M ' \
-          '{} ' \
-          'medaka_{}/consensus.fasta ' \
-          '{} {} ' \
+          '{0} ' \
+          '{1}/medaka_{2}/consensus.fasta ' \
+          '{2} {3} ' \
           '| samtools view -hu -F 4 - ' \
-          '| samtools sort - > medaka_{}/{}.out.bam' .format(pairing,
-                                                             outputdir,
-                                                             input_fastQ_IluminaA,
-                                                             input_fastQ_IluminaB,
-                                                             outputdir,
-                                                             outputdir)
+          '| samtools sort - > medaka_{1}/{1}.out.bam' .format(pairing,
+        						                                       outputdir,
+                                                               input_fastQ_IluminaA,
+                                                               input_fastQ_IluminaB)
 
    sami = 'samtools index ' \
-          'medaka_{}/{}.out.bam' .format(outputdir,
-                                         outputdir)
+          '{0}/medaka_{0}/{0}.out.bam' .format(outputdir)
 
    pilon = 'pilon ' \
-           '--genome medaka_{}/consensus.fasta ' \
-           '--frags medaka_{}/{}.out.bam ' \
-           '--outdir results_{}' .format(outputdir,
-                                       outputdir,
-                                       outputdir,
-                                       outputdir)
+           '--genome {0}/medaka_{0}/consensus.fasta ' \
+           '--frags {0}/medaka_{0}/{0}.out.bam ' \
+           '--outdir results_{0}' .format(outputdir)
+   
    os.system(bwai)
    os.system(bwaa)
    os.system(sami)
@@ -227,7 +222,7 @@ def main(argv):
    #for opt in opts:
       #if opt == '-E':
           #print('Cleaning up files')
-          #cleanup = 'rm -r medaka* racon* flye*'
+          #cleanup = 'rm -r {0}/medaka* {0}/racon* {0}/flye*' .format(outputdir)
           #os.system(cleanup)
           #print('Assembly complete')
           #sys.exit()
