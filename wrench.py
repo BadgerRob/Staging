@@ -96,8 +96,7 @@ def main(argv):
 
 #Make dir
    os.mkdir(outputdir)
-   #os.chdir(outputdir)
-   os.mkdir(polishing+outputdir)
+   os.mkdir(outputdir/polishing+outputdir)
 
 
 #Read filtering
