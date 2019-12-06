@@ -1,38 +1,37 @@
 #!/usr/bin/python
+#0.2
 
 import sys
 import os
 import getopt
 
-
-#Define current working dir
-cwd = os.getcwd()
-
 #Define inputs
 def main(argv):
-   input_fastQ_ONT = ''
-   outputdir = ''
-   genomesize = ''              #Estimate of genome size for assembly
-   input_fastQ_IluminaA = ''    #Input for interleaved paired ends and primary illumina reads
-   input_fastQ_IluminaB = ''    #Input for secondary illumina reads
-   threads = ''                 #Sets threads to use for all sections
-   polishing = 'racon_'         #prefex for polishing directory naming
-   rounds = '4'                 #Sets number of racon rounds
-   cutoff = '1250'              #Sets filtlong read length cutoff
-   keep = '90'                  #Sets filtlong read percentage to keep
-   qual = '12'                  #Sets filtlong quality weighting
+   input_fastQ_ONT = ''         #Input raw ONT fastq files (guppy-hac).
+   outputdir = ''               #Gives an id to output files and dir.
+   genomesize = ''              #Estimate of genome size for assembly.
+   input_fastQ_IluminaA = ''    #Input for interleaved paired ends and primary illumina reads.
+   input_fastQ_IluminaB = ''    #Input for secondary illumina reads.
+   threads = ''                 #Sets threads to use for all sections.
+   polishing = 'racon_'         #prefex for polishing directory naming.
+   rounds = '4'                 #Sets number of racon rounds.
+   prounds = '4'                #Sets number of pilon rounds.
+   cutoff = '1250'              #Sets filtlong read length cutoff.
+   keep = '90'                  #Sets filtlong read percentage to keep.
+   qual = '12'                  #Sets filtlong quality weighting.
    pairing = '-p'               #Sets BWA flag to -p using interleaved illumina reads. If IlumnaB used then BWA -p removed.
    n = int(1)                   #Used for racon round loop for output files.
    dirs = '/'
    fix = 'export LC_ALL=C; unset LANGUAGE' #Fix for cluster
 
    try:
-      opts, args = getopt.getopt(argv,"hi:r:l:m:g:t:o:u:c:k:q:p:",["idir=", "reads=", "ilumnA=", "ilumnB=", "genomesize=", "threds=", "odir=", "rounds=", "cutoff=","keep=","qual=","pairing="])
+      opts, args = getopt.getopt(argv,"hi:r:l:m:g:t:o:u:y:c:k:q:p:",["idir=", "reads=", "ilumnA=", "ilumnB=", "genomesize=", "threds=", "odir=", "rounds=", "prounds=", "cutoff=","keep=","qual=","pairing="])
    except getopt.GetoptError:
       print ('wrench.py -r [path/to/ONT.fastq] -l [path to ILLUMINA1.fastq] -g [genome size estimate] -o [output prefex] \n'
              '\n'
              '-t <threads>                (default 6) \n'
              '-u <racon rounds>           (default 4)\n'
+	     '-y <pilon rounds>           (default 4) \n'
              '-c <read length cutoff>     (default 1500bp)\n'
              '-q <read quality weighting> (default 15)\n'
              '-k <percent reads to keep>  (default 90) ')
@@ -47,6 +46,7 @@ def main(argv):
                 '-m --ilumnB           <optional: full path to ILLUMNA_2.fastq> \n'
                 '-t --threads    (int) <optional: number of threads> \n'
                 '-u --rounds     (int) <optional: number of racon polishing rounds (default 4)> \n'
+		'-y --prounds 	 (int) <optional: number of pilon polishing rounds (default 4)> \n'
                 '-c --cutoff     (int) <optional: read length < (int) discarded (default 1250) > \n'
                 '-k --keep       (int) <optional: percent of reads to retain (default 90)> \n'
                 '-q --qual       (int) <optional: quality weighting for ONT.fastq filtering (default 12) \n' 
@@ -56,7 +56,8 @@ def main(argv):
                 'OPTIONAL \n'
                 '-m <path to illumina B reads>'
                 '-t <threads>                (default 6) \n'
-                '-u <racon rounds>           (default 4)\n'
+                '-u <racon rounds>           (default 4) \n'
+		'-y <pilon rounds>           (default 4) \n'
                 '-c <read length cutoff>     (default 1500bp)\n'
                 '-q <read quality weighting> (default 15)\n'
                 '-k <percent reads to keep>  (default 90) \n'
@@ -89,6 +90,8 @@ def main(argv):
          threads = arg
       elif opt in ("-u", "--rounds"):
          rounds = int(arg)
+      elif opt in ("-y", "--prounds"):
+         prounds = int(arg)
       elif opt in ("-c", "--cutoff"):
          cutoff = int(arg)
       elif opt in ("-k", "--keep"):
@@ -111,7 +114,7 @@ def main(argv):
                                                           keep,
                                                           qual,
                                                           input_fastQ_ONT,
-							  outputdir)
+						          outputdir)
    os.system(filtlong)
 
 #Read assembly
@@ -191,6 +194,7 @@ def main(argv):
 					 rounds,
 					 threads)
    os.system(med)
+   n = int(1)
 
 #Pilon hybrid assembly
 
@@ -214,24 +218,52 @@ def main(argv):
    pilon = 'pilon ' \
            '--genome {0}/medaka_{0}/consensus.fasta ' \
            '--frags {0}/medaka_{0}/{0}.out.bam ' \
-           '--outdir results_{0}' .format(outputdir)
-   
+           '--outdir {0}/results_{1}' .format(outputdir,
+  					      n)
    os.system(bwai)
    os.system(bwaa)
    os.system(sami)
    os.system(pilon)
 
-   #for opt in opts:
-      #if opt == '-E':
-          #print('Cleaning up files')
-          #cleanup = 'rm -r {0}/medaka* {0}/racon* {0}/flye*' .format(outputdir)
-          #os.system(cleanup)
-          #print('Assembly complete')
-          #sys.exit()
-      #else
-          #print('Assembly complete')
-          #sys.exit()
-   print('done')
+   for x in range(1,prounds):
+      bwai_loop = 'bwa index ' \
+	            '{0}/results_{1}/pilon.fasta' .format(outputdir,
+							  n)
+
+      bwaa_loop = 'bwa mem ' \
+                  '-M ' \
+                  '{0} ' \
+                  '{4}/results_{1}/pilon.fasta ' \
+                  '{2} {3} ' \
+                  '| samtools view -hu -F 4 - ' \
+                  '| samtools sort - > {4}/medaka_{4}/{4}.out.bam' .format(pairing,
+                                                                            n,
+                                                                            input_fastQ_IluminaA,
+                                                                            input_fastQ_IluminaB,
+							                    outputdir)
+      sami_loop = 'samtools index ' \
+                  '{0}/medaka_{0}/{0}.out.bam' .format(outputdir)
+
+      pilon_loop = 'pilon ' \
+                   '--genome {0}/results_{1}/pilon.fasta ' \
+                   '--frags {0}/medaka_{0}/{0}.out.bam ' \
+                   '--outdir {0}/results_{2}' .format(outputdir,
+						      n,
+						      n + 1)
+      os.system(bwai_loop)
+      os.system(bwaa_loop)
+      os.system(sami_loop)
+      os.system(pilon_loop)
+      n = n + 1
+
+
+#   for opt in opts:
+#      if opt == '-E':
+#      print('Cleaning up files')
+#      cleanup = 'rm -r {0}' .format(outputdir)
+#      os.system(cleanup)
+#      sys.exit()
 
 if __name__ == "__main__":
    main(sys.argv[1:])
+
