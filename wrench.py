@@ -237,10 +237,10 @@ def main(argv):
                   '{2} {3} ' \
                   '| samtools view -hu -F 4 - ' \
                   '| samtools sort - > {4}/medaka_{4}/{4}.out.bam' .format(pairing,
-                                                                            n,
-                                                                            input_fastQ_IluminaA,
-                                                                            input_fastQ_IluminaB,
-							                    outputdir)
+									   n,
+									   input_fastQ_IluminaA,
+									   input_fastQ_IluminaB,
+									   outputdir)
       sami_loop = 'samtools index ' \
                   '{0}/medaka_{0}/{0}.out.bam' .format(outputdir)
 
